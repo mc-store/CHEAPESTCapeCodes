@@ -1,0 +1,1637 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["object" == typeof document ? document.currentScript : void 0, 590368, (e, t, r) => {
+    Object.defineProperty(r, "__esModule", {
+        value: !0
+    });
+    var a = e.r(37428)
+      , s = a && "object" == typeof a && "default" in a ? a : {
+        default: a
+    };
+    !function(e) {
+        if (!e || "u" < typeof window)
+            return;
+        let t = document.createElement("style");
+        t.setAttribute("type", "text/css"),
+        t.innerHTML = e,
+        document.head.appendChild(t)
+    }('.rfm-marquee-container {\n  overflow-x: hidden;\n  display: flex;\n  flex-direction: row;\n  position: relative;\n  width: var(--width);\n  transform: var(--transform);\n}\n.rfm-marquee-container:hover div {\n  animation-play-state: var(--pause-on-hover);\n}\n.rfm-marquee-container:active div {\n  animation-play-state: var(--pause-on-click);\n}\n\n.rfm-overlay {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n.rfm-overlay::before, .rfm-overlay::after {\n  background: linear-gradient(to right, var(--gradient-color), rgba(255, 255, 255, 0));\n  content: "";\n  height: 100%;\n  position: absolute;\n  width: var(--gradient-width);\n  z-index: 2;\n  pointer-events: none;\n  touch-action: none;\n}\n.rfm-overlay::after {\n  right: 0;\n  top: 0;\n  transform: rotateZ(180deg);\n}\n.rfm-overlay::before {\n  left: 0;\n  top: 0;\n}\n\n.rfm-marquee {\n  flex: 0 0 auto;\n  min-width: var(--min-width);\n  z-index: 1;\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  animation: scroll var(--duration) linear var(--delay) var(--iteration-count);\n  animation-play-state: var(--play);\n  animation-delay: var(--delay);\n  animation-direction: var(--direction);\n}\n@keyframes scroll {\n  0% {\n    transform: translateX(0%);\n  }\n  100% {\n    transform: translateX(-100%);\n  }\n}\n\n.rfm-initial-child-container {\n  flex: 0 0 auto;\n  display: flex;\n  min-width: auto;\n  flex-direction: row;\n  align-items: center;\n}\n\n.rfm-child {\n  transform: var(--transform);\n}'),
+    r.default = a.forwardRef(function({style: e={}, className: t="", autoFill: r=!1, play: l=!0, pauseOnHover: n=!1, pauseOnClick: i=!1, direction: o="left", speed: c=50, delay: d=0, loop: u=0, gradient: m=!1, gradientColor: h="white", gradientWidth: x=200, onFinish: f, onCycleComplete: p, onMount: v, children: g}, b) {
+        let[j,y] = a.useState(0)
+          , [w,N] = a.useState(0)
+          , [k,C] = a.useState(1)
+          , [P,S] = a.useState(!1)
+          , T = a.useRef(null)
+          , $ = b || T
+          , R = a.useRef(null)
+          , E = a.useCallback( () => {
+            if (R.current && $.current) {
+                let e = $.current.getBoundingClientRect()
+                  , t = R.current.getBoundingClientRect()
+                  , a = e.width
+                  , s = t.width;
+                ("up" === o || "down" === o) && (a = e.height,
+                s = t.height),
+                r && a && s ? C(s < a ? Math.ceil(a / s) : 1) : C(1),
+                y(a),
+                N(s)
+            }
+        }
+        , [r, $, o]);
+        a.useEffect( () => {
+            if (P && (E(),
+            R.current && $.current)) {
+                let e = new ResizeObserver( () => E());
+                return e.observe($.current),
+                e.observe(R.current),
+                () => {
+                    e && e.disconnect()
+                }
+            }
+        }
+        , [E, $, P]),
+        a.useEffect( () => {
+            E()
+        }
+        , [E, g]),
+        a.useEffect( () => {
+            S(!0)
+        }
+        , []),
+        a.useEffect( () => {
+            "function" == typeof v && v()
+        }
+        , []);
+        let F = a.useMemo( () => r ? w * k / c : w < j ? j / c : w / c, [r, j, w, k, c])
+          , A = a.useMemo( () => Object.assign(Object.assign({}, e), {
+            "--pause-on-hover": !l || n ? "paused" : "running",
+            "--pause-on-click": !l || n && !i || i ? "paused" : "running",
+            "--width": "up" === o || "down" === o ? "100vh" : "100%",
+            "--transform": "up" === o ? "rotate(-90deg)" : "down" === o ? "rotate(90deg)" : "none"
+        }), [e, l, n, i, o])
+          , _ = a.useMemo( () => ({
+            "--gradient-color": h,
+            "--gradient-width": "number" == typeof x ? `${x}px` : x
+        }), [h, x])
+          , M = a.useMemo( () => ({
+            "--play": l ? "running" : "paused",
+            "--direction": "left" === o ? "normal" : "reverse",
+            "--duration": `${F}s`,
+            "--delay": `${d}s`,
+            "--iteration-count": u ? `${u}` : "infinite",
+            "--min-width": r ? "auto" : "100%"
+        }), [l, o, F, d, u, r])
+          , I = a.useMemo( () => ({
+            "--transform": "up" === o ? "rotate(90deg)" : "down" === o ? "rotate(-90deg)" : "none"
+        }), [o])
+          , z = a.useCallback(e => [...Array(Number.isFinite(e) && e >= 0 ? e : 0)].map( (e, t) => s.default.createElement(a.Fragment, {
+            key: t
+        }, a.Children.map(g, e => s.default.createElement("div", {
+            style: I,
+            className: "rfm-child"
+        }, e)))), [I, g]);
+        return P ? s.default.createElement("div", {
+            ref: $,
+            style: A,
+            className: "rfm-marquee-container " + t
+        }, m && s.default.createElement("div", {
+            style: _,
+            className: "rfm-overlay"
+        }), s.default.createElement("div", {
+            className: "rfm-marquee",
+            style: M,
+            onAnimationIteration: p,
+            onAnimationEnd: f
+        }, s.default.createElement("div", {
+            className: "rfm-initial-child-container",
+            ref: R
+        }, a.Children.map(g, e => s.default.createElement("div", {
+            style: I,
+            className: "rfm-child"
+        }, e))), z(k - 1)), s.default.createElement("div", {
+            className: "rfm-marquee",
+            style: M
+        }, z(k))) : null
+    })
+}
+, 412753, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(781375)
+      , a = e.i(344873)
+      , s = e.i(610936);
+    e.s(["DisplayPrice", 0, function({usdAmount: e, className: l, forceUsd: n=!1}) {
+        let {currency: i, formatDisplayPrice: o} = (0,
+        r.useCurrency)()
+          , c = n ? (0,
+        a.formatPrice)(e) : o(e);
+        return (0,
+        t.jsx)(s.NoTranslate, {
+            className: l,
+            children: c
+        }, `${i}-${c}`)
+    }
+    ])
+}
+, 448358, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(340675)
+      , a = e.i(585653)
+      , s = e.i(936976)
+      , l = e.i(610936);
+    let n = [{
+        label: "Home",
+        href: "/"
+    }, {
+        label: "Shop",
+        href: "/shop"
+    }, {
+        label: "Endorsements",
+        href: "/videos"
+    }, {
+        label: "Reviews",
+        href: "/reviews"
+    }]
+      , i = [{
+        label: "Discord",
+        href: "https://discord.mccapes.net",
+        icon: a.FaDiscord
+    }, {
+        label: "YouTube",
+        href: "https://www.youtube.com/@realmccapes",
+        icon: a.FaYoutube
+    }, {
+        label: "Instagram",
+        href: "https://www.instagram.com/realmccapes",
+        icon: a.FaInstagram
+    }, {
+        label: "TikTok",
+        href: "https://www.tiktok.com/@realmccapes",
+        icon: a.FaTiktok
+    }];
+    e.s(["default", 0, () => (0,
+    t.jsx)("footer", {
+        className: "relative overflow-hidden border-t-2 border-[var(--color-ink)] bg-[#1d1a16] py-14 text-neutral-200",
+        children: (0,
+        t.jsxs)("div", {
+            className: "container relative z-10 mx-auto px-6",
+            children: [(0,
+            t.jsxs)("div", {
+                className: "grid grid-cols-1 gap-8 md:grid-cols-4",
+                children: [(0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "mb-4",
+                        children: (0,
+                        t.jsx)(r.default, {
+                            src: "/mccapes_text_logo.png",
+                            alt: "MC Capes",
+                            width: 1581,
+                            height: 286,
+                            className: "h-8 w-auto"
+                        })
+                    }), (0,
+                    t.jsx)("p", {
+                        className: "mb-4 text-neutral-300",
+                        children: "The safest way to buy your Minecraft capes."
+                    }), (0,
+                    t.jsx)("div", {
+                        className: "flex items-center gap-4",
+                        children: i.map( ({label: e, href: r, icon: a}) => (0,
+                        t.jsx)("a", {
+                            href: r,
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                            "aria-label": e,
+                            className: "text-neutral-300 transition-colors hover:text-white",
+                            children: (0,
+                            t.jsx)(a, {
+                                className: "h-6 w-6"
+                            })
+                        }, e))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Shop"
+                    }), (0,
+                    t.jsx)("ul", {
+                        className: "space-y-2",
+                        children: n.map(e => (0,
+                        t.jsx)("li", {
+                            children: (0,
+                            t.jsxs)("a", {
+                                href: e.href,
+                                className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                                children: [(0,
+                                t.jsx)(a.FaChevronRight, {
+                                    className: "mr-2 text-xs"
+                                }), e.label]
+                            })
+                        }, e.label))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Company"
+                    }), (0,
+                    t.jsx)("ul", {
+                        className: "space-y-2",
+                        children: [{
+                            label: "FAQ",
+                            href: "/faq"
+                        }, {
+                            label: "Trust Center",
+                            href: "/trust"
+                        }, {
+                            label: "Privacy Policy",
+                            href: "/privacy"
+                        }, {
+                            label: "Terms of Service",
+                            href: "/terms"
+                        }, {
+                            label: "Delivery & Refund Policy",
+                            href: "/refunds"
+                        }].map(e => (0,
+                        t.jsx)("li", {
+                            children: (0,
+                            t.jsxs)("a", {
+                                href: e.href,
+                                className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                                children: [(0,
+                                t.jsx)(a.FaChevronRight, {
+                                    className: "mr-2 text-xs"
+                                }), e.label]
+                            })
+                        }, e.label))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Contact"
+                    }), (0,
+                    t.jsxs)("address", {
+                        className: "not-italic space-y-2",
+                        children: [(0,
+                        t.jsxs)("a", {
+                            href: "/about",
+                            className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                            children: [(0,
+                            t.jsx)(a.FaChevronRight, {
+                                className: "mr-2 text-xs"
+                            }), "About Us"]
+                        }), (0,
+                        t.jsxs)("a", {
+                            href: "mailto:support@mccapes.net",
+                            className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                            children: [(0,
+                            t.jsx)(a.FaChevronRight, {
+                                className: "mr-2 text-xs"
+                            }), "support@mccapes.net"]
+                        })]
+                    })]
+                })]
+            }), (0,
+            t.jsxs)("div", {
+                className: "mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/15 pt-8 md:flex-row md:gap-0",
+                children: [(0,
+                t.jsxs)("p", {
+                    className: "text-sm text-neutral-300",
+                    children: ["© 2026 ", (0,
+                    t.jsx)(l.NoTranslate, {
+                        children: "MCCAPES LLC"
+                    }), ". All rights reserved."]
+                }), (0,
+                t.jsxs)("div", {
+                    className: "flex items-center gap-4",
+                    children: [(0,
+                    t.jsx)("p", {
+                        className: "text-sm text-neutral-300",
+                        children: "mccapes.net"
+                    }), (0,
+                    t.jsx)(s.default, {})]
+                })]
+            })]
+        })
+    })])
+}
+, 790905, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(37428)
+      , a = e.i(610936)
+      , s = e.i(350053)
+      , l = e.i(483246)
+      , n = e.i(473321);
+    e.s(["FormattedText", 0, function({children: e, names: i=[]}) {
+        let o = (0,
+        s.useProtectTranslatePhrases)(i)
+          , c = (0,
+        r.useMemo)( () => (0,
+        n.parseDiscordInline)(e ?? ""), [e]);
+        return (0,
+        t.jsx)(t.Fragment, {
+            children: function e(s, n, i) {
+                return s.map( (s, o) => {
+                    let c = `${i}-${o}`;
+                    if ("text" === s.type) {
+                        var d;
+                        let e;
+                        return (0,
+                        t.jsx)(r.Fragment, {
+                            children: (d = s.value,
+                            1 !== (e = (0,
+                            l.splitTextByProtectTranslatePhrases)(d, n)).length || e[0]?.protect ? e.map( (e, s) => e.protect ? (0,
+                            t.jsx)(a.NoTranslate, {
+                                children: e.value
+                            }, `${c}-${s}`) : (0,
+                            t.jsx)(r.Fragment, {
+                                children: e.value
+                            }, `${c}-${s}`)) : d)
+                        }, c)
+                    }
+                    if ("code" === s.type) {
+                        let e = s.children.map(e => "text" === e.type ? e.value : "").join("");
+                        return (0,
+                        t.jsx)("code", {
+                            className: "rounded bg-[var(--surface-muted)] px-1 py-0.5 font-mono text-[0.9em]",
+                            children: e
+                        }, c)
+                    }
+                    let u = e(s.children, n, c);
+                    switch (s.type) {
+                    case "bold":
+                        return (0,
+                        t.jsx)("strong", {
+                            className: "font-semibold",
+                            children: u
+                        }, c);
+                    case "italic":
+                        return (0,
+                        t.jsx)("em", {
+                            children: u
+                        }, c);
+                    case "underline":
+                        return (0,
+                        t.jsx)("u", {
+                            children: u
+                        }, c);
+                    case "strike":
+                        return (0,
+                        t.jsx)("s", {
+                            children: u
+                        }, c);
+                    default:
+                        return (0,
+                        t.jsx)(r.Fragment, {
+                            children: u
+                        }, c)
+                    }
+                }
+                )
+            }(c, o, "ft")
+        })
+    }
+    ])
+}
+, 936976, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(319565)
+      , a = e.i(117354)
+      , s = e.i(585653)
+      , l = e.i(109876);
+    e.s(["default", 0, () => {
+        let {isDark: e, toggleTheme: n} = (0,
+        l.useTheme)();
+        return (0,
+        t.jsx)(a.motion.button, {
+            type: "button",
+            whileHover: {
+                scale: 1.05
+            },
+            whileTap: {
+                scale: .9,
+                rotate: -15
+            },
+            onClick: n,
+            "aria-label": e ? "Switch to light mode" : "Switch to dark mode",
+            title: e ? "Switch to light mode" : "Switch to dark mode",
+            className: "p-2 rounded-full bg-[var(--surface)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors relative flex items-center justify-center overflow-hidden",
+            children: (0,
+            t.jsx)("span", {
+                className: "relative flex h-[1.125rem] w-[1.125rem] items-center justify-center",
+                children: (0,
+                t.jsx)(r.AnimatePresence, {
+                    mode: "wait",
+                    initial: !1,
+                    children: e ? (0,
+                    t.jsx)(a.motion.span, {
+                        initial: {
+                            rotate: -90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        animate: {
+                            rotate: 0,
+                            scale: 1,
+                            opacity: 1
+                        },
+                        exit: {
+                            rotate: 90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        transition: {
+                            duration: .28,
+                            ease: "easeOut"
+                        },
+                        className: "absolute flex items-center justify-center",
+                        children: (0,
+                        t.jsx)(s.FaMoon, {
+                            className: "text-base"
+                        })
+                    }, "moon") : (0,
+                    t.jsx)(a.motion.span, {
+                        initial: {
+                            rotate: 90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        animate: {
+                            rotate: 0,
+                            scale: 1,
+                            opacity: 1
+                        },
+                        exit: {
+                            rotate: -90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        transition: {
+                            duration: .28,
+                            ease: "easeOut"
+                        },
+                        className: "absolute flex items-center justify-center",
+                        children: (0,
+                        t.jsx)(s.FaSun, {
+                            className: "text-base"
+                        })
+                    }, "sun")
+                })
+            })
+        })
+    }
+    ])
+}
+, 819272, 712137, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(117354)
+      , a = e.i(340675)
+      , s = e.i(836878)
+      , l = e.i(585653)
+      , n = e.i(362972)
+      , i = e.i(825194)
+      , o = e.i(37428)
+      , c = e.i(157361);
+    let d = (0,
+    o.createContext)(null)
+      , u = () => (0,
+    o.useContext)(d);
+    e.s(["ProductCardGroup", 0, ({children: e}) => {
+        let r = (0,
+        o.useRef)(new Set)
+          , [a,s] = (0,
+        o.useState)(!1)
+          , l = (0,
+        o.useCallback)( (e, t) => {
+            let a = r.current;
+            t ? a.add(e) : a.delete(e),
+            s(a.size > 0)
+        }
+        , [])
+          , n = (0,
+        o.useMemo)( () => ({
+            anyOverlap: a,
+            reportOverlap: l
+        }), [a, l]);
+        return (0,
+        t.jsx)(d.Provider, {
+            value: n,
+            children: e
+        })
+    }
+    , "useProductCardGroup", 0, u], 712137);
+    var m = e.i(257439)
+      , h = e.i(412753)
+      , x = e.i(610936)
+      , f = e.i(790905)
+      , p = e.i(409321)
+      , v = e.i(680097)
+      , g = e.i(671577);
+    let b = r.motion.create(s.default)
+      , j = ({product: e, compact: r, isHovered: s=!1, isStatic: l=!1}) => {
+        let n = (0,
+        m.resolveCapeTexturePath)(e)
+          , i = (0,
+        m.resolveProductBackgroundImage)(e)
+          , o = (0,
+        m.isExternalHttpUrl)(i);
+        return (0,
+        t.jsxs)("div", {
+            className: "absolute inset-0",
+            children: [(0,
+            t.jsx)(a.default, {
+                src: i,
+                alt: "",
+                fill: !0,
+                priority: !1,
+                unoptimized: o,
+                className: `object-cover ${(0,
+                m.getProductBackgroundBlurClasses)(r ? "compact" : "default")}`
+            }), !l && (0,
+            t.jsx)("div", {
+                className: "absolute inset-0",
+                children: (0,
+                t.jsx)(c.default, {
+                    texturePath: n,
+                    productSlug: e.slug,
+                    compact: !!r,
+                    variant: "shop-card",
+                    isHovered: s
+                })
+            })]
+        })
+    }
+    ;
+    e.s(["default", 0, ({product: e, styles: s="normal", staticMedia: c=!1}) => {
+        let d = (0,
+        n.usePathname)()
+          , {addItem: y} = (0,
+        i.useCart)()
+          , [w,N] = (0,
+        o.useState)(!1)
+          , k = (0,
+        o.useRef)(null)
+          , [C,P] = (0,
+        o.useState)(!1)
+          , S = u()
+          , T = e?.preorder === !0
+          , $ = null == e ? "none" : 0 === e.stock ? "gray" : e.stock <= 3 ? "red" : e.stock <= 5 ? "yellow" : "green"
+          , R = e ? T ? (0,
+        p.getPreorderStockCardStatusText)(e.stock) : (0,
+        p.getNonPreorderStockStatusText)(e.stock, e.stockUnitLabel) : ""
+          , E = T || "none" !== $ && "green" !== $;
+        (0,
+        o.useLayoutEffect)( () => {
+            if (!E || "normal" !== s)
+                return;
+            let e = k.current;
+            if (!e)
+                return;
+            let t = () => P(e.scrollWidth > e.clientWidth);
+            t();
+            let r = new ResizeObserver(t);
+            return r.observe(e),
+            () => r.disconnect()
+        }
+        , [E, s, e?.name, R]),
+        (0,
+        o.useEffect)( () => {
+            if (!S || !e)
+                return;
+            let t = e.id
+              , r = E && "normal" === s && C;
+            return S.reportOverlap(t, r),
+            () => S.reportOverlap(t, !1)
+        }
+        , [S, e?.id, E, s, C]);
+        let F = S ? S.anyOverlap : C;
+        if (!e)
+            return null;
+        let A = (0,
+        v.parseProductBadge)(e.badge)
+          , _ = (0,
+        m.isCapeProduct)(e)
+          , M = `/shop/${e.slug}${"/" === d ? "?from=home" : ""}`
+          , I = t => {
+            t.preventDefault(),
+            t.stopPropagation(),
+            y(e)
+        }
+          , z = "gray" === $ ? "stock-badge stock-badge--muted" : "yellow" === $ ? "stock-badge stock-badge--warning" : "green" === $ ? "stock-badge stock-badge--success" : "stock-badge stock-badge--danger";
+        return "article" === s ? (0,
+        t.jsxs)(b, {
+            href: M,
+            className: "group flex cursor-pointer items-center gap-5 glass-effect rounded-2xl shadow-[var(--shadow-card)] p-4 transition-all duration-200 hover:border-[color-mix(in_srgb,var(--primary),var(--border)_55%)] card-hover",
+            whileHover: {
+                scale: 1.03
+            },
+            onMouseEnter: () => N(!0),
+            onMouseLeave: () => N(!1),
+            style: (0,
+            g.getCardColorStyle)(e.cardColor),
+            children: [(0,
+            t.jsxs)("span", {
+                className: "sr-only",
+                children: ["View ", (0,
+                t.jsx)(x.NoTranslate, {
+                    children: e.name
+                })]
+            }), (0,
+            t.jsx)("div", {
+                className: "relative h-24 w-1/3 flex-shrink-0 overflow-hidden rounded-xl border border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-muted),var(--background)_35%)]",
+                children: _ ? (0,
+                t.jsx)(j, {
+                    product: e,
+                    compact: !0,
+                    isHovered: w,
+                    isStatic: c
+                }) : (0,
+                t.jsx)(a.default, {
+                    src: e.image,
+                    alt: e.name,
+                    fill: !0,
+                    className: "object-cover"
+                })
+            }), (0,
+            t.jsxs)("div", {
+                className: "relative flex h-full flex-1 flex-col justify-between",
+                children: [E && (0,
+                t.jsx)("div", {
+                    className: "absolute right-0 top-0 hidden md:block",
+                    children: (0,
+                    t.jsx)("span", {
+                        className: z,
+                        children: R
+                    })
+                }), (0,
+                t.jsx)("div", {
+                    children: (0,
+                    t.jsx)("h4", {
+                        className: "text-lg font-semibold text-[var(--foreground)] group-hover:text-[var(--accent-light)]",
+                        children: (0,
+                        t.jsx)(x.NoTranslate, {
+                            children: e.name
+                        })
+                    })
+                }), (0,
+                t.jsxs)("div", {
+                    className: "mt-4 flex items-center justify-between",
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "flex min-w-0 items-center gap-2",
+                        children: (0,
+                        t.jsxs)("span", {
+                            className: "text-xl font-bold text-[var(--foreground)]",
+                            children: [(0,
+                            t.jsx)(h.DisplayPrice, {
+                                usdAmount: e.price
+                            }), null != e.slashPrice && e.slashPrice > 0 && (0,
+                            t.jsx)("span", {
+                                className: "ml-2 text-sm text-[var(--color-text-muted)] line-through",
+                                children: (0,
+                                t.jsx)(h.DisplayPrice, {
+                                    usdAmount: e.slashPrice
+                                })
+                            })]
+                        })
+                    }), (0,
+                    t.jsx)("button", {
+                        onClick: I,
+                        onMouseDown: e => e.stopPropagation(),
+                        className: "btn-accent-fill rounded-lg p-2 transition",
+                        children: (0,
+                        t.jsx)(l.FaShoppingCart, {
+                            size: 16
+                        })
+                    })]
+                })]
+            })]
+        }, e.id) : (0,
+        t.jsxs)(b, {
+            href: M,
+            className: "group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border-[1.5px] border-[var(--color-border-dark)] bg-[var(--surface)] shadow-[var(--shadow-card)] card-hover",
+            variants: {
+                hidden: {
+                    opacity: 0,
+                    y: 20
+                },
+                visible: {
+                    opacity: 1,
+                    y: 0
+                }
+            },
+            transition: {
+                type: "spring",
+                stiffness: 260,
+                damping: 24
+            },
+            onMouseEnter: () => N(!0),
+            onMouseLeave: () => N(!1),
+            style: (0,
+            g.getCardColorStyle)(e.cardColor),
+            children: [(0,
+            t.jsxs)("span", {
+                className: "sr-only",
+                children: ["View ", (0,
+                t.jsx)(x.NoTranslate, {
+                    children: e.name
+                })]
+            }), (0,
+            t.jsxs)("div", {
+                className: "relative h-60 shrink-0 overflow-hidden border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--surface-muted),var(--background)_35%)]",
+                children: [_ ? (0,
+                t.jsx)(j, {
+                    product: e,
+                    isHovered: w
+                }) : (0,
+                t.jsx)(a.default, {
+                    src: e.image,
+                    alt: e.name,
+                    fill: !0,
+                    className: "object-cover"
+                }), A && (0,
+                t.jsx)("span", {
+                    className: "product-badge absolute left-3 top-3 z-10",
+                    style: {
+                        backgroundColor: A.color,
+                        borderColor: A.color
+                    },
+                    children: A.text
+                }), E && F && (0,
+                t.jsx)("div", {
+                    className: "absolute bottom-3 right-3 z-20 hidden md:block",
+                    children: (0,
+                    t.jsx)("span", {
+                        className: z,
+                        children: R
+                    })
+                })]
+            }), (0,
+            t.jsxs)("div", {
+                className: "relative flex flex-1 flex-col p-5",
+                children: [E && (0,
+                t.jsxs)("div", {
+                    ref: k,
+                    "aria-hidden": "true",
+                    className: "pointer-events-none invisible absolute inset-x-5 top-5 hidden items-start gap-2 whitespace-nowrap md:flex",
+                    children: [(0,
+                    t.jsx)("h4", {
+                        className: "text-2xl",
+                        children: e.name
+                    }), (0,
+                    t.jsx)("span", {
+                        className: `shrink-0 ${z}`,
+                        children: R
+                    })]
+                }), E && !F && (0,
+                t.jsx)("div", {
+                    className: "absolute right-5 top-5 z-20 hidden md:block",
+                    children: (0,
+                    t.jsx)("span", {
+                        className: z,
+                        children: R
+                    })
+                }), (0,
+                t.jsxs)("div", {
+                    className: "mb-2 flex flex-col items-start gap-1.5 md:hidden",
+                    children: [(0,
+                    t.jsx)("span", {
+                        className: `shrink-0 ${z}`,
+                        children: R
+                    }), (0,
+                    t.jsx)("h4", {
+                        className: "min-w-0 text-2xl text-[var(--foreground)] group-hover:text-[var(--accent-light)]",
+                        children: (0,
+                        t.jsx)(x.NoTranslate, {
+                            children: e.name
+                        })
+                    })]
+                }), (0,
+                t.jsx)("h4", {
+                    className: "mb-2 hidden text-2xl text-[var(--foreground)] group-hover:text-[var(--accent-light)] md:block",
+                    children: (0,
+                    t.jsx)(x.NoTranslate, {
+                        children: e.name
+                    })
+                }), (0,
+                t.jsx)("p", {
+                    className: "mb-5 line-clamp-2 text-sm text-[var(--color-text-secondary)]",
+                    children: (0,
+                    t.jsx)(f.FormattedText, {
+                        children: e.description
+                    })
+                }), (0,
+                t.jsxs)("div", {
+                    className: "mt-auto flex items-center justify-between",
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "flex min-w-0 items-center gap-2",
+                        children: (0,
+                        t.jsxs)("span", {
+                            className: "text-2xl font-bold text-[var(--foreground)]",
+                            children: [(0,
+                            t.jsx)(h.DisplayPrice, {
+                                usdAmount: e.price
+                            }), null != e.slashPrice && e.slashPrice > 0 && (0,
+                            t.jsx)("span", {
+                                className: "ml-2 text-sm line-through text-[var(--color-text-muted)]",
+                                children: (0,
+                                t.jsx)(h.DisplayPrice, {
+                                    usdAmount: e.slashPrice
+                                })
+                            })]
+                        })
+                    }), (0,
+                    t.jsx)("button", {
+                        type: "button",
+                        onClick: I,
+                        className: "btn-accent-fill flex items-center rounded-xl p-2.5 transition",
+                        children: (0,
+                        t.jsx)(r.motion.div, {
+                            whileHover: {
+                                scale: 1.08
+                            },
+                            whileTap: {
+                                scale: .93
+                            },
+                            children: (0,
+                            t.jsx)(l.FaShoppingCart, {
+                                size: 16
+                            })
+                        })
+                    })]
+                })]
+            })]
+        }, e.id)
+    }
+    ], 819272)
+}
+, 413092, 197705, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(432349);
+    let a = "https://www.trustpilot.com/review/mccapes.net";
+    e.s(["TRUSTPILOT_URL", 0, a, "toReview", 0, function(e) {
+        return {
+            id: e.id,
+            author: e.author,
+            country: e.country,
+            rating: e.rating,
+            title: e.title,
+            message: e.message,
+            date: e.date.toISOString().slice(0, 10),
+            tpId: e.tpId
+        }
+    }
+    , "trustpilotReviewUrl", 0, e => e.tpId ? `https://www.trustpilot.com/reviews/${e.tpId}` : null], 197705);
+    var s = e.i(263047)
+      , l = e.i(840885);
+    e.s(["default", 0, ({className: e}) => {
+        let n = (0,
+        s.useTRPC)()
+          , {data: i} = (0,
+        l.useQuery)(n.settings.getTrustpilotRating.queryOptions())
+          , {data: o} = (0,
+        l.useQuery)(n.settings.getTrustpilotReviewCount.queryOptions());
+        return null == i || null == o ? null : (0,
+        t.jsxs)("a", {
+            href: a,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: `inline-flex flex-wrap items-center justify-center gap-2.5 text-lg hover:opacity-80 transition-opacity ${e ?? ""}`,
+            children: [(0,
+            t.jsx)("span", {
+                className: "font-semibold text-[var(--foreground)]",
+                children: i >= 4.5 ? "Excellent" : i >= 4 ? "Great" : i >= 3 ? "Average" : i >= 2 ? "Poor" : "Bad"
+            }), (0,
+            t.jsx)(r.default, {
+                rating: i,
+                size: 22
+            }), (0,
+            t.jsxs)("span", {
+                className: "text-[var(--color-text-secondary)]",
+                children: [i.toFixed(1), " based on ", o, " reviews on", " ", (0,
+                t.jsx)("span", {
+                    className: "font-semibold",
+                    style: {
+                        color: "#00b67a"
+                    },
+                    children: "Trustpilot"
+                })]
+            })]
+        })
+    }
+    ], 413092)
+}
+, 432349, e => {
+    "use strict";
+    var t = e.i(694957);
+    let r = ({fill: e, size: r}) => (0,
+    t.jsxs)("span", {
+        className: "relative flex shrink-0 items-center justify-center overflow-hidden rounded-[3px]",
+        style: {
+            height: r,
+            width: r,
+            backgroundColor: "#dcdce6"
+        },
+        children: [(0,
+        t.jsx)("span", {
+            className: "absolute inset-y-0 left-0",
+            style: {
+                width: `${100 * e}%`,
+                backgroundColor: "#00b67a"
+            }
+        }), (0,
+        t.jsx)("svg", {
+            viewBox: "0 0 24 24",
+            className: "relative h-[60%] w-[60%] fill-white",
+            children: (0,
+            t.jsx)("path", {
+                d: "M12 2l2.9 6.9 7.4.6-5.6 4.9 1.7 7.3L12 17.8l-6.4 3.9 1.7-7.3L1.7 9.5l7.4-.6z"
+            })
+        })]
+    });
+    e.s(["default", 0, ({rating: e, size: a=18, className: s}) => (0,
+    t.jsx)("div", {
+        className: `flex gap-1 ${s ?? ""}`,
+        role: "img",
+        "aria-label": `${e} out of 5 stars`,
+        children: Array.from({
+            length: 5
+        }, (s, l) => {
+            let n;
+            return (0,
+            t.jsx)(r, {
+                fill: (n = e - l) >= 1 ? 1 : n <= 0 ? 0 : n,
+                size: a
+            }, l)
+        }
+        )
+    })])
+}
+, 148652, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(340675)
+      , a = e.i(143450);
+    let s = {
+        sm: "h-14 w-14",
+        md: "h-16 w-16",
+        lg: "h-20 w-20"
+    };
+    e.s(["default", 0, function({videoUrl: e, title: l, thumbnailUrl: n, isPlaying: i, onPlay: o, className: c="", playButtonSize: d="md", mediaRounding: u="rounded-lg", playIconColorClass: m="border-l-[var(--primary)]"}) {
+        let h = (0,
+        a.toYoutubeEmbedUrl)(e, {
+            autoplay: i
+        })
+          , x = (0,
+        a.getYoutubeThumbnailUrl)(e, n)
+          , f = s[d];
+        return (0,
+        t.jsx)("div", {
+            className: `relative aspect-video w-full ${c}`,
+            onClick: i ? void 0 : o,
+            role: i ? void 0 : "button",
+            tabIndex: i ? void 0 : 0,
+            onKeyDown: i ? void 0 : e => {
+                ("Enter" === e.key || " " === e.key) && (e.preventDefault(),
+                o())
+            }
+            ,
+            children: !i && x ? (0,
+            t.jsxs)(t.Fragment, {
+                children: [(0,
+                t.jsx)(r.default, {
+                    src: x,
+                    alt: l,
+                    fill: !0,
+                    sizes: "(min-width: 768px) 40vw, 100vw",
+                    className: `${u} object-cover`
+                }), (0,
+                t.jsx)("div", {
+                    className: "absolute inset-0 flex items-center justify-center",
+                    children: (0,
+                    t.jsx)("div", {
+                        className: `flex ${f} items-center justify-center rounded-full bg-[var(--surface)] shadow-[var(--shadow-card)] transition-transform hover:scale-[1.03]`,
+                        children: (0,
+                        t.jsx)("div", {
+                            className: `ml-1.5 h-0 w-0 border-y-[10px] border-l-[18px] border-y-transparent ${m}`
+                        })
+                    })
+                })]
+            }) : (0,
+            t.jsx)("iframe", {
+                className: `h-full w-full ${u}`,
+                src: h,
+                title: l,
+                allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                allowFullScreen: !0
+            })
+        })
+    }
+    ])
+}
+, 671577, e => {
+    "use strict";
+    e.s(["getCardColorStyle", 0, e => {
+        if (!e)
+            return;
+        let t = {
+            backgroundColor: e
+        }
+          , r = (e => {
+            let t, r, a, s = e.trim().replace(/^#/, "");
+            if (3 === s.length)
+                t = parseInt(s[0] + s[0], 16),
+                r = parseInt(s[1] + s[1], 16),
+                a = parseInt(s[2] + s[2], 16);
+            else {
+                if (6 !== s.length)
+                    return null;
+                t = parseInt(s.slice(0, 2), 16),
+                r = parseInt(s.slice(2, 4), 16),
+                a = parseInt(s.slice(4, 6), 16)
+            }
+            return [t, r, a].some(Number.isNaN) ? null : [t, r, a]
+        }
+        )(e);
+        return r && (( (e, t, r) => (299 * e + 587 * t + 114 * r) / 1e3)(...r) >= 128 ? (t["--foreground"] = "#171717",
+        t["--color-text-secondary"] = "rgba(0, 0, 0, 0.62)",
+        t["--color-text-muted"] = "rgba(0, 0, 0, 0.48)") : (t["--foreground"] = "#ffffff",
+        t["--color-text-secondary"] = "rgba(255, 255, 255, 0.72)",
+        t["--color-text-muted"] = "rgba(255, 255, 255, 0.55)")),
+        t
+    }
+    ])
+}
+, 571927, e => {
+    "use strict";
+    e.s(["countryFlag", 0, function(e) {
+        let t = e.trim().toUpperCase();
+        return /^[A-Z]{2}$/.test(t) ? t.replace(/./g, e => String.fromCodePoint(127397 + e.charCodeAt(0))) : ""
+    }
+    ])
+}
+, 473321, e => {
+    "use strict";
+    let t = [{
+        delim: "**",
+        type: "bold"
+    }, {
+        delim: "__",
+        type: "underline"
+    }, {
+        delim: "~~",
+        type: "strike"
+    }, {
+        delim: "`",
+        type: "code",
+        raw: !0
+    }, {
+        delim: "*",
+        type: "italic"
+    }, {
+        delim: "_",
+        type: "italic"
+    }];
+    e.s(["parseDiscordInline", 0, function e(r) {
+        let a = []
+          , s = r;
+        for (; s.length > 0; ) {
+            let r = function(e) {
+                for (let r = 0; r < e.length; r++)
+                    for (let a of t) {
+                        if (!e.startsWith(a.delim, r))
+                            continue;
+                        let t = r + a.delim.length
+                          , s = e.indexOf(a.delim, t);
+                        if (s > t)
+                            return {
+                                index: r,
+                                rule: a,
+                                inner: e.slice(t, s),
+                                end: s + a.delim.length
+                            }
+                    }
+                return null
+            }(s);
+            if (!r) {
+                a.push({
+                    type: "text",
+                    value: s
+                });
+                break
+            }
+            r.index > 0 && a.push({
+                type: "text",
+                value: s.slice(0, r.index)
+            });
+            let l = "raw" in r.rule && r.rule.raw ? [{
+                type: "text",
+                value: r.inner
+            }] : e(r.inner);
+            a.push({
+                type: r.rule.type,
+                children: l
+            }),
+            s = s.slice(r.end)
+        }
+        return a
+    }
+    ])
+}
+, 680097, e => {
+    "use strict";
+    let t = "#4ade80";
+    e.s(["DEFAULT_PRODUCT_BADGE_COLOR", 0, t, "parseProductBadge", 0, function(e) {
+        if (!e || "object" != typeof e || Array.isArray(e) || "string" != typeof e.text || "" === e.text.trim())
+            return null;
+        let r = "string" == typeof e.color && "" !== e.color.trim() ? e.color : t;
+        return {
+            text: e.text,
+            color: r
+        }
+    }
+    ])
+}
+, 409321, e => {
+    "use strict";
+    e.s(["getNonPreorderStockStatusText", 0, (e, t) => {
+        let r = t?.trim() || "in stock";
+        return e >= 6 ? "In stock" : e > 0 ? `${e} ${r}` : "Out of stock"
+    }
+    , "getPreorderStockCardStatusText", 0, e => e > 0 ? `${e} available` : "Unavailable", "getPreorderStockStatusText", 0, e => e > 0 ? `${e} preorder${e > 1 ? "s" : ""} available` : "No preorders available", "getStockStatusTone", 0, e => e >= 6 ? "green" : e >= 4 ? "yellow" : e >= 1 ? "red" : "gray"])
+}
+, 143450, e => {
+    "use strict";
+    let t = e => e.toLowerCase().replace(/[^a-z0-9]/g, "");
+    function r(e) {
+        let t = e.match(/^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
+        return t && 11 === t[1].length ? t[1] : null
+    }
+    function a(e) {
+        try {
+            let t = new URL(e)
+              , r = t.searchParams.get("start") ?? t.searchParams.get("t")
+              , a = t.hash.startsWith("#t=") ? t.hash.slice(3) : null
+              , s = r ?? a;
+            if (!s)
+                return null;
+            if (/^\d+s?$/.test(s))
+                return Number(s.replace(/s$/, ""));
+            let l = s.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+            if (!l || "" === l[0])
+                return null;
+            let n = Number(l[1] ?? 0)
+              , i = Number(l[2] ?? 0)
+              , o = 3600 * n + 60 * i + Number(l[3] ?? 0);
+            return o > 0 ? o : null
+        } catch {
+            return null
+        }
+    }
+    e.s(["getYoutubeID", 0, r, "getYoutubeStartSeconds", 0, a, "getYoutubeThumbnailUrl", 0, function(e, t) {
+        if (t)
+            return t;
+        let a = r(e);
+        return a ? `https://img.youtube.com/vi/${a}/maxresdefault.jpg` : ""
+    }
+    , "sortVideosByCreatorSubscribers", 0, function(e, r, a) {
+        let s = new Map(a.map(e => [e.channelId, e.name]))
+          , l = new Map;
+        for (let e of r) {
+            let r = s.get(e.id);
+            for (let a of r ? [e.name, r] : [e.name])
+                l.set(t(a), e.subscriberCount)
+        }
+        let n = e => l.get(t(e.description)) ?? 0;
+        return [...e].sort( (e, t) => n(t) - n(e))
+    }
+    , "toYoutubeEmbedUrl", 0, function(e, t) {
+        let s = r(e);
+        if (!s)
+            return e;
+        let l = new URLSearchParams
+          , n = a(e);
+        null != n && l.set("start", String(n)),
+        t?.autoplay && l.set("autoplay", "1");
+        let i = l.toString();
+        return i ? `https://www.youtube.com/embed/${s}?${i}` : `https://www.youtube.com/embed/${s}`
+    }
+    ])
+}
+, 1321, 104858, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(117354)
+      , a = e.i(319565)
+      , s = e.i(37428)
+      , l = e.i(836878)
+      , n = e.i(362972)
+      , i = e.i(819272)
+      , o = e.i(148652)
+      , c = e.i(610936);
+    let d = r.motion.create(l.default)
+      , u = () => {}
+      , m = {
+        hidden: {
+            opacity: 0,
+            y: 15
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: .5
+            }
+        }
+    }
+      , h = ({article: e, products: a, hideProduct: s, fromHome: l, isPlaying: n, onPlay: u, staticMedia: h=!1}) => {
+        let x = e.description.split("\n\n")
+          , f = x[0]
+          , p = "right" === e.alignment ? "md:float-right md:ml-8" : "md:float-left md:mr-8"
+          , v = `/articles/${e.link}${l ? "?from=home" : ""}`;
+        return (0,
+        t.jsxs)(t.Fragment, {
+            children: [!s && e.productSlug && (0,
+            t.jsx)(r.motion.div, {
+                className: "mb-8 md:w-1/3 mx-auto",
+                variants: m,
+                children: (0,
+                t.jsx)(i.default, {
+                    product: a.find(t => t.slug === e.productSlug),
+                    styles: "article",
+                    staticMedia: h
+                })
+            }), (0,
+            t.jsx)(r.motion.div, {
+                className: "mb-8 text-center md:text-left md:w-4/5 mx-auto",
+                variants: m,
+                children: (0,
+                t.jsx)(r.motion.h3, {
+                    className: "text-3xl font-bold mb-4 text-[var(--foreground)]",
+                    variants: m,
+                    children: (0,
+                    t.jsx)(c.ProtectedText, {
+                        children: e.title
+                    })
+                })
+            }), (0,
+            t.jsxs)(r.motion.div, {
+                className: "md:w-4/5 mx-auto mb-8",
+                variants: m,
+                children: [(0,
+                t.jsx)("div", {
+                    className: `relative mb-5 w-full overflow-hidden rounded-lg md:mb-4 md:w-1/2 ${p}`,
+                    children: (0,
+                    t.jsx)(o.default, {
+                        videoUrl: e.videoUrl,
+                        title: e.title,
+                        thumbnailUrl: e.thumbnailUrl,
+                        isPlaying: n,
+                        onPlay: u,
+                        className: "cursor-pointer bg-black"
+                    })
+                }), (0,
+                t.jsx)(r.motion.p, {
+                    className: "text-lg text-[var(--color-text-secondary)] mb-4",
+                    variants: m,
+                    children: (0,
+                    t.jsx)(c.ProtectedText, {
+                        children: f
+                    })
+                }), x.slice(1, 3).map( (e, a) => (0,
+                t.jsx)(r.motion.p, {
+                    className: "hidden mb-4 text-lg text-[var(--color-text-secondary)] md:block",
+                    variants: m,
+                    children: (0,
+                    t.jsx)(c.ProtectedText, {
+                        children: e
+                    })
+                }, a)), (0,
+                t.jsx)("div", {
+                    className: "clear-both"
+                })]
+            }), (0,
+            t.jsxs)("div", {
+                className: "mt-6 gap-4 flex justify-center",
+                children: [(0,
+                t.jsx)(d, {
+                    href: v,
+                    className: "minecraft-btn",
+                    whileHover: {
+                        scale: 1.02
+                    },
+                    whileTap: {
+                        scale: .98
+                    },
+                    variants: m,
+                    children: "Read More"
+                }), (0,
+                t.jsx)(d, {
+                    href: "/articles",
+                    className: "minecraft-btn",
+                    whileHover: {
+                        scale: 1.02
+                    },
+                    whileTap: {
+                        scale: .98
+                    },
+                    variants: m,
+                    children: "View All Articles"
+                })]
+            })]
+        })
+    }
+    ;
+    e.s(["default", 0, ({articles: e, products: l, hideProduct: i=!1}) => {
+        let o = (0,
+        n.usePathname)()
+          , [c,d] = (0,
+        s.useState)(0)
+          , [m,x] = (0,
+        s.useState)(!1)
+          , [f,p] = (0,
+        s.useState)(0)
+          , v = e[c] ?? e[0];
+        if (!v)
+            return null;
+        let g = "/" === o
+          , b = () => {
+            d(t => 0 === t ? e.length - 1 : t - 1),
+            x(!1)
+        }
+          , j = () => {
+            d(t => t === e.length - 1 ? 0 : t + 1),
+            x(!1)
+        }
+        ;
+        if (!e.length)
+            return null;
+        let y = e.length > 1;
+        return (0,
+        t.jsx)("section", {
+            className: `bg-transparent relative px-4 sm:px-6 lg:px-8 pt-16 ${y ? "pb-12" : "pb-16"}`,
+            children: (0,
+            t.jsxs)("div", {
+                className: "container mx-auto relative",
+                children: [y && (0,
+                t.jsxs)(t.Fragment, {
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "hidden md:block absolute left-4 top-1/2 transform -translate-y-1/2 z-20",
+                        children: (0,
+                        t.jsx)("button", {
+                            onClick: b,
+                            className: "carousel-nav-btn h-10 w-10",
+                            children: (0,
+                            t.jsx)("svg", {
+                                xmlns: "http://www.w3.org/2000/svg",
+                                className: "h-3.5 w-3.5 text-[var(--foreground)]",
+                                viewBox: "0 0 20 20",
+                                fill: "currentColor",
+                                children: (0,
+                                t.jsx)("path", {
+                                    fillRule: "evenodd",
+                                    d: "M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z",
+                                    clipRule: "evenodd"
+                                })
+                            })
+                        })
+                    }), (0,
+                    t.jsx)("div", {
+                        className: "hidden md:block absolute right-4 top-1/2 transform -translate-y-1/2 z-20",
+                        children: (0,
+                        t.jsx)("button", {
+                            onClick: j,
+                            className: "carousel-nav-btn h-10 w-10",
+                            children: (0,
+                            t.jsx)("svg", {
+                                xmlns: "http://www.w3.org/2000/svg",
+                                className: "h-3.5 w-3.5 text-[var(--foreground)]",
+                                viewBox: "0 0 20 20",
+                                fill: "currentColor",
+                                children: (0,
+                                t.jsx)("path", {
+                                    fillRule: "evenodd",
+                                    d: "M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z",
+                                    clipRule: "evenodd"
+                                })
+                            })
+                        })
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    className: "relative",
+                    children: [(0,
+                    t.jsx)("div", {
+                        "aria-hidden": !0,
+                        inert: !0,
+                        className: "grid grid-cols-1 invisible pointer-events-none",
+                        children: e.map( (e, r) => (0,
+                        t.jsx)("div", {
+                            className: "col-start-1 row-start-1",
+                            children: (0,
+                            t.jsx)(h, {
+                                article: e,
+                                products: l,
+                                hideProduct: i,
+                                fromHome: g,
+                                isPlaying: !1,
+                                onPlay: u,
+                                staticMedia: !0
+                            })
+                        }, r))
+                    }), (0,
+                    t.jsx)("div", {
+                        className: "absolute inset-0 flex items-center",
+                        children: (0,
+                        t.jsx)("div", {
+                            className: "w-full",
+                            children: (0,
+                            t.jsx)(a.AnimatePresence, {
+                                mode: "wait",
+                                custom: f,
+                                children: (0,
+                                t.jsx)(r.motion.div, {
+                                    custom: f,
+                                    variants: {
+                                        enter: e => ({
+                                            x: e > 0 ? 50 : -50,
+                                            opacity: 0
+                                        }),
+                                        center: {
+                                            zIndex: 1,
+                                            x: 0,
+                                            opacity: 1
+                                        },
+                                        exit: e => ({
+                                            zIndex: 0,
+                                            x: e < 0 ? 50 : -50,
+                                            opacity: 0
+                                        })
+                                    },
+                                    initial: "enter",
+                                    animate: "center",
+                                    exit: "exit",
+                                    transition: {
+                                        x: {
+                                            duration: .35,
+                                            ease: [.22, .61, .36, 1]
+                                        },
+                                        opacity: {
+                                            duration: .15
+                                        }
+                                    },
+                                    drag: "x",
+                                    dragConstraints: {
+                                        left: 0,
+                                        right: 0
+                                    },
+                                    dragElastic: .2,
+                                    onDragEnd: (e, t) => {
+                                        window.innerWidth <= 768 && (t.offset.x > 50 ? (p(-1),
+                                        b()) : t.offset.x < -50 && (p(1),
+                                        j()))
+                                    }
+                                    ,
+                                    className: "relative md:cursor-default cursor-grab active:cursor-grabbing",
+                                    children: (0,
+                                    t.jsx)(h, {
+                                        article: v,
+                                        products: l,
+                                        hideProduct: i,
+                                        fromHome: g,
+                                        isPlaying: m,
+                                        onPlay: () => x(!0)
+                                    })
+                                }, c)
+                            })
+                        })
+                    })]
+                }), y && (0,
+                t.jsx)("div", {
+                    className: "flex justify-center mt-6 gap-2",
+                    children: e.map( (e, r) => (0,
+                    t.jsx)("button", {
+                        onClick: () => {
+                            d(r),
+                            x(!1)
+                        }
+                        ,
+                        className: `h-3 w-3 rounded-full transition-all duration-200 ${r === c ? "scale-125 bg-[var(--primary)]" : "bg-[var(--color-text-muted)] hover:bg-[var(--foreground)]"}`
+                    }, r))
+                })]
+            })
+        })
+    }
+    ], 1321);
+    var x = e.i(590368)
+      , f = e.i(77983)
+      , p = e.i(340675)
+      , v = e.i(263047)
+      , g = e.i(840885);
+    e.s(["default", 0, () => {
+        let e = (0,
+        v.useTRPC)()
+          , a = (0,
+        g.useQuery)(e.partner.getAll.queryOptions())
+          , [n,i] = (0,
+        s.useState)([])
+          , [o,d] = (0,
+        s.useState)(!0);
+        return ((0,
+        s.useEffect)( () => {
+            a.data && (async () => {
+                i(await (0,
+                f.fetchYouTubeChannels)(a.data.map(e => e.channelId))),
+                d(!1)
+            }
+            )()
+        }
+        , [a.data]),
+        o) ? (0,
+        t.jsx)("div", {
+            className: "flex justify-center items-center min-h-[200px]",
+            children: (0,
+            t.jsx)("div", {
+                className: "loading-spinner",
+                "aria-hidden": "true"
+            })
+        }) : 0 === n.length ? null : (0,
+        t.jsxs)(t.Fragment, {
+            children: [(0,
+            t.jsx)(x.default, {
+                gradient: !1,
+                speed: 30,
+                className: "py-4 overflow-hidden",
+                children: n.map(e => (0,
+                t.jsxs)("div", {
+                    className: "flex flex-col items-center mx-8 cursor-pointer transition-transform duration-200 hover:scale-[1.02] group",
+                    onClick: () => window.open(e.url, "_blank"),
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "w-32 h-32 relative mb-4",
+                        children: (0,
+                        t.jsx)(r.motion.div, {
+                            className: "relative w-full h-full overflow-hidden bg-[var(--surface-muted)] rounded-full border-2 border-[var(--color-ink)] shadow-[3px_3px_0_0_var(--color-ink)] transition-shadow duration-200 group-hover:shadow-[5px_5px_0_0_var(--color-ink)]",
+                            transition: {
+                                duration: .6
+                            },
+                            children: (0,
+                            t.jsx)(p.default, {
+                                src: e.thumbnailUrl,
+                                alt: e.name,
+                                fill: !0,
+                                sizes: "128px",
+                                className: "rounded-full",
+                                style: {
+                                    objectFit: "cover"
+                                }
+                            })
+                        })
+                    }), (0,
+                    t.jsx)("h4", {
+                        className: "text-lg font-semibold text-[var(--foreground)] mb-1 transition-all duration-300 group-hover:font-bold",
+                        children: (0,
+                        t.jsx)(c.NoTranslate, {
+                            children: e.name
+                        })
+                    }), (0,
+                    t.jsxs)("p", {
+                        className: "text-[var(--color-text-secondary)] text-sm",
+                        children: [(0,
+                        t.jsx)("span", {
+                            className: "font-bold",
+                            children: e.subscribers
+                        }), " ", (0,
+                        t.jsx)("span", {
+                            className: "font-normal",
+                            children: "subscribers"
+                        })]
+                    })]
+                }, e.id))
+            }), (0,
+            t.jsx)("div", {
+                className: "flex justify-center mt-8",
+                children: (0,
+                t.jsx)(l.default, {
+                    href: "/partners",
+                    className: "minecraft-btn text-sm px-5 py-2",
+                    children: "View All"
+                })
+            })]
+        })
+    }
+    ], 104858)
+}
+]);
