@@ -1,0 +1,330 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["object" == typeof document ? document.currentScript : void 0, 329306, e => {
+    "use strict";
+    var t = e.i(694957)
+      , s = e.i(448358)
+      , a = e.i(836878);
+    e.s(["default", 0, function() {
+        return (0,
+        t.jsxs)("div", {
+            className: "flex min-h-screen flex-col bg-[var(--background)]",
+            children: [(0,
+            t.jsx)("div", {
+                className: "flex flex-grow items-center justify-center px-6 py-16",
+                children: (0,
+                t.jsxs)("div", {
+                    className: "max-w-lg text-center",
+                    children: [(0,
+                    t.jsx)("p", {
+                        className: "mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]",
+                        children: "404"
+                    }), (0,
+                    t.jsx)("h1", {
+                        className: "mb-4 text-4xl font-bold text-[var(--foreground)] md:text-5xl",
+                        children: "Page not found"
+                    }), (0,
+                    t.jsx)("p", {
+                        className: "mb-8 text-[var(--color-text-secondary)]",
+                        children: "That page doesn't exist or may have moved. Head back to browse capes or return home."
+                    }), (0,
+                    t.jsxs)("div", {
+                        className: "flex flex-col items-center justify-center gap-3 sm:flex-row",
+                        children: [(0,
+                        t.jsx)(a.default, {
+                            href: "/shop",
+                            className: "minecraft-btn px-8 py-3",
+                            children: "Browse Shop"
+                        }), (0,
+                        t.jsx)(a.default, {
+                            href: "/",
+                            className: "rounded-xl border border-[var(--border)] bg-[var(--surface)] px-8 py-3 font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--surface-muted)]",
+                            children: "Go Home"
+                        })]
+                    })]
+                })
+            }), (0,
+            t.jsx)(s.default, {})]
+        })
+    }
+    ])
+}
+, 448358, e => {
+    "use strict";
+    var t = e.i(694957)
+      , s = e.i(340675)
+      , a = e.i(585653)
+      , r = e.i(936976)
+      , l = e.i(610936);
+    let i = [{
+        label: "Home",
+        href: "/"
+    }, {
+        label: "Shop",
+        href: "/shop"
+    }, {
+        label: "Endorsements",
+        href: "/videos"
+    }, {
+        label: "Reviews",
+        href: "/reviews"
+    }]
+      , c = [{
+        label: "Discord",
+        href: "https://discord.mccapes.net",
+        icon: a.FaDiscord
+    }, {
+        label: "YouTube",
+        href: "https://www.youtube.com/@realmccapes",
+        icon: a.FaYoutube
+    }, {
+        label: "Instagram",
+        href: "https://www.instagram.com/realmccapes",
+        icon: a.FaInstagram
+    }, {
+        label: "TikTok",
+        href: "https://www.tiktok.com/@realmccapes",
+        icon: a.FaTiktok
+    }];
+    e.s(["default", 0, () => (0,
+    t.jsx)("footer", {
+        className: "relative overflow-hidden border-t-2 border-[var(--color-ink)] bg-[#1d1a16] py-14 text-neutral-200",
+        children: (0,
+        t.jsxs)("div", {
+            className: "container relative z-10 mx-auto px-6",
+            children: [(0,
+            t.jsxs)("div", {
+                className: "grid grid-cols-1 gap-8 md:grid-cols-4",
+                children: [(0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("div", {
+                        className: "mb-4",
+                        children: (0,
+                        t.jsx)(s.default, {
+                            src: "/mccapes_text_logo.png",
+                            alt: "MC Capes",
+                            width: 1581,
+                            height: 286,
+                            className: "h-8 w-auto"
+                        })
+                    }), (0,
+                    t.jsx)("p", {
+                        className: "mb-4 text-neutral-300",
+                        children: "The safest way to buy your Minecraft capes."
+                    }), (0,
+                    t.jsx)("div", {
+                        className: "flex items-center gap-4",
+                        children: c.map( ({label: e, href: s, icon: a}) => (0,
+                        t.jsx)("a", {
+                            href: s,
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                            "aria-label": e,
+                            className: "text-neutral-300 transition-colors hover:text-white",
+                            children: (0,
+                            t.jsx)(a, {
+                                className: "h-6 w-6"
+                            })
+                        }, e))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Shop"
+                    }), (0,
+                    t.jsx)("ul", {
+                        className: "space-y-2",
+                        children: i.map(e => (0,
+                        t.jsx)("li", {
+                            children: (0,
+                            t.jsxs)("a", {
+                                href: e.href,
+                                className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                                children: [(0,
+                                t.jsx)(a.FaChevronRight, {
+                                    className: "mr-2 text-xs"
+                                }), e.label]
+                            })
+                        }, e.label))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Company"
+                    }), (0,
+                    t.jsx)("ul", {
+                        className: "space-y-2",
+                        children: [{
+                            label: "FAQ",
+                            href: "/faq"
+                        }, {
+                            label: "Trust Center",
+                            href: "/trust"
+                        }, {
+                            label: "Privacy Policy",
+                            href: "/privacy"
+                        }, {
+                            label: "Terms of Service",
+                            href: "/terms"
+                        }, {
+                            label: "Delivery & Refund Policy",
+                            href: "/refunds"
+                        }].map(e => (0,
+                        t.jsx)("li", {
+                            children: (0,
+                            t.jsxs)("a", {
+                                href: e.href,
+                                className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                                children: [(0,
+                                t.jsx)(a.FaChevronRight, {
+                                    className: "mr-2 text-xs"
+                                }), e.label]
+                            })
+                        }, e.label))
+                    })]
+                }), (0,
+                t.jsxs)("div", {
+                    children: [(0,
+                    t.jsx)("h5", {
+                        className: "mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-neutral-400",
+                        children: "Contact"
+                    }), (0,
+                    t.jsxs)("address", {
+                        className: "not-italic space-y-2",
+                        children: [(0,
+                        t.jsxs)("a", {
+                            href: "/about",
+                            className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                            children: [(0,
+                            t.jsx)(a.FaChevronRight, {
+                                className: "mr-2 text-xs"
+                            }), "About Us"]
+                        }), (0,
+                        t.jsxs)("a", {
+                            href: "mailto:support@mccapes.net",
+                            className: "flex items-center text-neutral-300 transition-colors hover:text-white",
+                            children: [(0,
+                            t.jsx)(a.FaChevronRight, {
+                                className: "mr-2 text-xs"
+                            }), "support@mccapes.net"]
+                        })]
+                    })]
+                })]
+            }), (0,
+            t.jsxs)("div", {
+                className: "mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/15 pt-8 md:flex-row md:gap-0",
+                children: [(0,
+                t.jsxs)("p", {
+                    className: "text-sm text-neutral-300",
+                    children: ["© 2026 ", (0,
+                    t.jsx)(l.NoTranslate, {
+                        children: "MCCAPES LLC"
+                    }), ". All rights reserved."]
+                }), (0,
+                t.jsxs)("div", {
+                    className: "flex items-center gap-4",
+                    children: [(0,
+                    t.jsx)("p", {
+                        className: "text-sm text-neutral-300",
+                        children: "mccapes.net"
+                    }), (0,
+                    t.jsx)(r.default, {})]
+                })]
+            })]
+        })
+    })])
+}
+, 936976, e => {
+    "use strict";
+    var t = e.i(694957)
+      , s = e.i(319565)
+      , a = e.i(117354)
+      , r = e.i(585653)
+      , l = e.i(109876);
+    e.s(["default", 0, () => {
+        let {isDark: e, toggleTheme: i} = (0,
+        l.useTheme)();
+        return (0,
+        t.jsx)(a.motion.button, {
+            type: "button",
+            whileHover: {
+                scale: 1.05
+            },
+            whileTap: {
+                scale: .9,
+                rotate: -15
+            },
+            onClick: i,
+            "aria-label": e ? "Switch to light mode" : "Switch to dark mode",
+            title: e ? "Switch to light mode" : "Switch to dark mode",
+            className: "p-2 rounded-full bg-[var(--surface)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-colors relative flex items-center justify-center overflow-hidden",
+            children: (0,
+            t.jsx)("span", {
+                className: "relative flex h-[1.125rem] w-[1.125rem] items-center justify-center",
+                children: (0,
+                t.jsx)(s.AnimatePresence, {
+                    mode: "wait",
+                    initial: !1,
+                    children: e ? (0,
+                    t.jsx)(a.motion.span, {
+                        initial: {
+                            rotate: -90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        animate: {
+                            rotate: 0,
+                            scale: 1,
+                            opacity: 1
+                        },
+                        exit: {
+                            rotate: 90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        transition: {
+                            duration: .28,
+                            ease: "easeOut"
+                        },
+                        className: "absolute flex items-center justify-center",
+                        children: (0,
+                        t.jsx)(r.FaMoon, {
+                            className: "text-base"
+                        })
+                    }, "moon") : (0,
+                    t.jsx)(a.motion.span, {
+                        initial: {
+                            rotate: 90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        animate: {
+                            rotate: 0,
+                            scale: 1,
+                            opacity: 1
+                        },
+                        exit: {
+                            rotate: -90,
+                            scale: .3,
+                            opacity: 0
+                        },
+                        transition: {
+                            duration: .28,
+                            ease: "easeOut"
+                        },
+                        className: "absolute flex items-center justify-center",
+                        children: (0,
+                        t.jsx)(r.FaSun, {
+                            className: "text-base"
+                        })
+                    }, "sun")
+                })
+            })
+        })
+    }
+    ])
+}
+]);
