@@ -1,0 +1,367 @@
+(globalThis.TURBOPACK || (globalThis.TURBOPACK = [])).push(["object" == typeof document ? document.currentScript : void 0, 43944, e => {
+    "use strict";
+    var t = e.i(694957)
+      , r = e.i(117354)
+      , s = e.i(273506);
+    function a(e) {
+        return (0,
+        s.GenIcon)({
+            tag: "svg",
+            attr: {
+                viewBox: "0 0 512 512"
+            },
+            child: [{
+                tag: "path",
+                attr: {
+                    fill: "none",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                    strokeWidth: "48",
+                    d: "m112 184 144 144 144-144"
+                },
+                child: []
+            }]
+        })(e)
+    }
+    function i(e) {
+        return (0,
+        s.GenIcon)({
+            tag: "svg",
+            attr: {
+                viewBox: "0 0 512 512"
+            },
+            child: [{
+                tag: "rect",
+                attr: {
+                    width: "416",
+                    height: "320",
+                    x: "48",
+                    y: "96",
+                    fill: "none",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                    strokeWidth: "32",
+                    rx: "40",
+                    ry: "40"
+                },
+                child: []
+            }, {
+                tag: "path",
+                attr: {
+                    fill: "none",
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                    strokeWidth: "32",
+                    d: "m112 160 144 112 144-112"
+                },
+                child: []
+            }]
+        })(e)
+    }
+    var n = e.i(37428)
+      , l = e.i(840885)
+      , o = e.i(263047)
+      , d = e.i(473321);
+    let c = [.16, 1, .3, 1]
+      , x = ({n: e}) => (0,
+    t.jsx)("span", {
+        className: "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--primary),transparent_85%)] text-xs font-bold text-[var(--primary-dark)]",
+        children: e
+    })
+      , m = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)|(https?:\/\/[^\s<]*[^\s<.,;:!?)"'])|([\w.+-]+@[\w-]+(?:\.[\w-]+)+)/g
+      , h = (e, r) => e.map( (e, s) => {
+        let a = `${r}-${s}`;
+        if ("text" === e.type)
+            return (0,
+            t.jsx)(n.Fragment, {
+                children: e.value
+            }, a);
+        if ("code" === e.type) {
+            let r = e.children.map(e => "text" === e.type ? e.value : "").join("");
+            return (0,
+            t.jsx)("code", {
+                className: "rounded bg-[var(--surface-muted)] px-1 py-0.5 font-mono text-[0.9em]",
+                children: r
+            }, a)
+        }
+        let i = h(e.children, a);
+        switch (e.type) {
+        case "bold":
+            return (0,
+            t.jsx)("strong", {
+                className: "font-semibold",
+                children: i
+            }, a);
+        case "italic":
+            return (0,
+            t.jsx)("em", {
+                children: i
+            }, a);
+        case "underline":
+            return (0,
+            t.jsx)("u", {
+                children: i
+            }, a);
+        case "strike":
+            return (0,
+            t.jsx)("s", {
+                children: i
+            }, a);
+        default:
+            return (0,
+            t.jsx)(n.Fragment, {
+                children: i
+            }, a)
+        }
+    }
+    )
+      , u = (e, t) => h((0,
+    d.parseDiscordInline)(e), t)
+      , p = e => {
+        let r = []
+          , s = 0
+          , a = (e, s) => {
+            e && r.push((0,
+            t.jsx)(n.Fragment, {
+                children: u(e, s)
+            }, s))
+        }
+        ;
+        for (let i of e.matchAll(m)) {
+            let[n,l,o,d,c] = i;
+            i.index > s && a(e.slice(s, i.index), `t-${s}`);
+            let x = o ?? d ?? `mailto:${c}`;
+            r.push((0,
+            t.jsx)("a", {
+                href: x,
+                ...x.startsWith("http") ? {
+                    target: "_blank",
+                    rel: "noopener noreferrer"
+                } : {},
+                className: "text-[var(--primary-dark)] hover:underline font-medium",
+                children: l ?? n
+            }, `a-${i.index}`)),
+            s = i.index + n.length
+        }
+        return a(e.slice(s), `t-${s}`),
+        r
+    }
+      , f = ({answer: e}) => (0,
+    t.jsx)("div", {
+        className: "space-y-3",
+        children: (e => {
+            let t = []
+              , r = null;
+            for (let s of e.split("\n")) {
+                let e = s.trim();
+                if (!e) {
+                    r = null;
+                    continue
+                }
+                let a = /^\d+\.\s+(.*)$/.exec(e);
+                a ? (r?.kind !== "steps" && (r = {
+                    kind: "steps",
+                    items: []
+                },
+                t.push(r)),
+                r.items.push(a[1])) : (r?.kind !== "text" && (r = {
+                    kind: "text",
+                    lines: []
+                },
+                t.push(r)),
+                r.lines.push(e))
+            }
+            return t
+        }
+        )(e).map( (e, r) => "steps" === e.kind ? (0,
+        t.jsx)("ol", {
+            className: "mt-2 space-y-3",
+            children: e.items.map( (e, r) => (0,
+            t.jsxs)("li", {
+                className: "flex items-start gap-3",
+                children: [(0,
+                t.jsx)(x, {
+                    n: r + 1
+                }), (0,
+                t.jsx)("span", {
+                    children: p(e)
+                })]
+            }, r))
+        }, r) : (0,
+        t.jsx)("p", {
+            children: e.lines.map( (e, r) => (0,
+            t.jsxs)(n.Fragment, {
+                children: [r > 0 && (0,
+                t.jsx)("br", {}), p(e)]
+            }, r))
+        }, r))
+    })
+      , j = ({item: e, index: s}) => {
+        let[i,l] = (0,
+        n.useState)(!1);
+        return (0,
+        t.jsxs)(r.motion.div, {
+            initial: {
+                opacity: 0,
+                y: 16
+            },
+            whileInView: {
+                opacity: 1,
+                y: 0
+            },
+            viewport: {
+                once: !0
+            },
+            transition: {
+                duration: .5,
+                delay: .06 * s,
+                ease: c
+            },
+            className: "mb-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-card)]",
+            children: [(0,
+            t.jsxs)("button", {
+                onClick: () => l(!i),
+                "aria-expanded": i,
+                className: "flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:bg-[var(--surface-muted)] sm:px-6",
+                children: [(0,
+                t.jsxs)("span", {
+                    className: "flex min-w-0 flex-1 flex-wrap items-center gap-2.5",
+                    children: [(0,
+                    t.jsx)("h3", {
+                        className: "text-lg font-semibold leading-snug text-[var(--foreground)]",
+                        children: u(e.question, "q")
+                    }), e.highlight && (0,
+                    t.jsx)("span", {
+                        className: "inline-flex shrink-0 items-center rounded-full bg-[var(--primary)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--surface)]",
+                        children: "Most common"
+                    })]
+                }), (0,
+                t.jsx)(r.motion.span, {
+                    animate: {
+                        rotate: 180 * !!i
+                    },
+                    transition: {
+                        duration: .3,
+                        ease: c
+                    },
+                    className: "shrink-0 text-[var(--primary-dark)]",
+                    children: (0,
+                    t.jsx)(a, {
+                        className: "h-5 w-5"
+                    })
+                })]
+            }), (0,
+            t.jsx)(r.motion.div, {
+                initial: !1,
+                animate: {
+                    height: i ? "auto" : 0,
+                    opacity: +!!i
+                },
+                transition: {
+                    duration: .3,
+                    ease: c
+                },
+                className: "overflow-hidden",
+                children: (0,
+                t.jsx)("div", {
+                    className: "px-5 pb-6 leading-relaxed text-[var(--color-text-secondary)] sm:px-6",
+                    children: (0,
+                    t.jsx)(f, {
+                        answer: e.answer
+                    })
+                })
+            })]
+        })
+    }
+    ;
+    e.s(["FAQAnswer", 0, f, "default", 0, ({showTitle: e=!1, showContactButtons: s=!1}) => {
+        let a = (0,
+        o.useTRPC)()
+          , {data: n, isLoading: d} = (0,
+        l.useQuery)(a.settings.getFaqItems.queryOptions());
+        return (0,
+        t.jsxs)("div", {
+            children: [e && (0,
+            t.jsxs)(r.motion.div, {
+                initial: {
+                    opacity: 0,
+                    y: -16
+                },
+                animate: {
+                    opacity: 1,
+                    y: 0
+                },
+                transition: {
+                    duration: .6,
+                    ease: c
+                },
+                className: "text-center mb-16",
+                children: [(0,
+                t.jsx)("h1", {
+                    className: "mb-2 text-4xl text-[var(--foreground)] md:text-5xl",
+                    children: "Frequently Asked Questions"
+                }), (0,
+                t.jsx)("p", {
+                    className: "mx-auto max-w-2xl text-[var(--color-text-secondary)]",
+                    children: "Find answers to common questions about our service."
+                })]
+            }), (0,
+            t.jsx)("div", {
+                className: "mb-16",
+                children: d ? (0,
+                t.jsx)("div", {
+                    className: "space-y-4",
+                    children: [0, 1, 2].map(e => (0,
+                    t.jsx)("div", {
+                        className: "h-[74px] animate-pulse rounded-2xl bg-surface-muted"
+                    }, e))
+                }) : n?.map( (e, r) => (0,
+                t.jsx)(j, {
+                    item: e,
+                    index: r
+                }, e.id))
+            }), s && (0,
+            t.jsxs)(r.motion.div, {
+                initial: {
+                    opacity: 0,
+                    y: 20
+                },
+                whileInView: {
+                    opacity: 1,
+                    y: 0
+                },
+                viewport: {
+                    once: !0
+                },
+                transition: {
+                    duration: .6,
+                    ease: c
+                },
+                className: "rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center shadow-[var(--shadow-card)]",
+                children: [(0,
+                t.jsx)("h2", {
+                    className: "mb-3 text-2xl font-bold text-[var(--foreground)]",
+                    children: "Still have questions?"
+                }), (0,
+                t.jsx)("p", {
+                    className: "mb-6 text-[var(--color-text-secondary)]",
+                    children: "Can't find the answer you're looking for? Feel free to reach out to our support team."
+                }), (0,
+                t.jsx)("div", {
+                    className: "flex justify-center items-center",
+                    children: (0,
+                    t.jsxs)("a", {
+                        href: "mailto:support@mccapes.net",
+                        className: "minecraft-btn inline-flex items-center gap-2",
+                        children: [(0,
+                        t.jsx)(i, {
+                            className: "h-4 w-4"
+                        }), "Email Support"]
+                    })
+                })]
+            })]
+        })
+    }
+    ], 43944)
+}
+]);
