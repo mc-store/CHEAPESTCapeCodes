@@ -1,6 +1,4 @@
-<html lang="en">
-    <head>
-        <meta charSet="utf-8"/>
+utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="preload" as="image" imageSrcSet="/_next/image?url=%2Fmccapes_text_logo.png&amp;w=1920&amp;q=75 1x, /_next/image?url=%2Fmccapes_text_logo.png&amp;w=3840&amp;q=75 2x"/>
         <link rel="stylesheet" href="/_next/static/chunks/1lkykpjhu_ypv.css" data-precedence="next"/>
