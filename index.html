@@ -3627,11 +3627,11 @@ const capes = [
     onSale: true,
     image: "moonlightcape.gg",
     showcaseImage: "moonlightcape.gg",
-    // Our Products must use Moonlight's own 3D render from the existing repository path.
-    // Never substitute the Crafter image or the flat catalogue artwork in this card.
-    productImage: "capes 3D/moonlightcape3D",
+    // Our Products must use the dedicated 3D render named moonlightcape3D.
+    // Do not fall back to the flat catalogue artwork in the product card.
+    productImage: "media/moonlightcape3D.png",
     detailImage: "moonlightcape.gg",
-    fallbackImage: "capes 3D/moonlightcape3D",
+    fallbackImage: "media/moonlight-cape.png",
     sceneBackground: "moonvillage.png",
     description: "A moonlight-inspired design for your Minecraft cape collection.",
     label: ""
@@ -4031,7 +4031,7 @@ function capeCard(cape) {
                data-original-src="${escapeHTML(cape.productImage || cape.image)}"
                data-cape-product-id="${escapeHTML(cape.id)}"
                data-image-file="${escapeHTML((cape.productImage || cape.image).split('/').pop())}"
-               data-fallback-image="${escapeHTML(cape.id === "moonlight" ? "capes 3D/moonlightcape3D" : (cape.fallbackImage || cape.showcaseImage || cape.image))}"
+               data-fallback-image="${escapeHTML(cape.id === "moonlight" ? (cape.productImage || "capes 3D/moonlightcape3D") : (cape.fallbackImage || cape.showcaseImage || cape.image))}"
                data-fallback-alt="${escapeHTML(cape.name)}"
                alt="${escapeHTML(cape.name)}"
                loading="lazy"
@@ -28327,8 +28327,6 @@ nav .nav-links .nav-link[href="#home"].active {
     if (img.dataset.capeProductId === "moonlight") {
       // Only resolve Moonlight's own render. Never substitute Crafter or another cape image.
       const exactCandidates = [
-        // The existing render path uses this exact extensionless filename.
-        "capes 3D/moonlightcape3D",
         "media/moonlightcape3D.png", "media/moonlightcape3D.PNG",
         "media/moonlightcape3D.webp", "media/moonlightcape3D.WEBP",
         "media/moonlightcape3D.jpg", "media/moonlightcape3D.JPG",
