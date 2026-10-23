@@ -28326,8 +28326,15 @@ nav .nav-links .nav-link[href="#home"].active {
     // Do not run generic basename resolution here: it can pick a different cape with a duplicate filename.
     if (img.dataset.capeProductId === "moonlight") {
       const exactCandidates = [
+        // Check the likely location used in the current CHEAPESTCapeCodes repo first,
+        // then the dedicated 3D folder. Keep Moonlight isolated from other cape artwork.
+        "media/moonlightcape3D", "media/moonlightcape3D.png", "media/moonlightcape3D.webp",
+        "media/moonlightcape3D.jpg", "media/moonlightcape3D.jpeg",
         "capes 3D/moonlightcape3D", "capes 3D/moonlightcape3D.png", "capes 3D/moonlightcape3D.webp",
-        "Capes 3D/moonlightcape3D", "Capes 3D/moonlightcape3D.png", "capes3D/moonlightcape3D.png"
+        "capes 3D/moonlightcape3D.jpg", "capes 3D/moonlightcape3D.jpeg",
+        "Capes 3D/moonlightcape3D", "Capes 3D/moonlightcape3D.png", "Capes 3D/moonlightcape3D.webp",
+        "capes3D/moonlightcape3D", "capes3D/moonlightcape3D.png", "capes3D/moonlightcape3D.webp",
+        "moonlightcape3D", "moonlightcape3D.png", "moonlightcape3D.webp", "moonlightcape3D.jpg"
       ];
       let exact = null;
       for (const candidate of exactCandidates) {
