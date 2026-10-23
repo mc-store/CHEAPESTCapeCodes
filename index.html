@@ -7,14 +7,14 @@
 <title>CHEAPEST Cape Codes | Minecraft Cape Shop</title>
 <meta name="description" content="Discover Minecraft capes at CHEAPEST Cape Codes. Browse our collection, check availability, and contact us on Discord.">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://mc-store.github.io/MC_STORE/">
+<link rel="canonical" href="https://mc-store.github.io/CHEAPESTCapeCodes/">
 
 <!-- Social sharing preview: show the CHEAPEST Cape Codes logo when the site link is shared. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CHEAPEST Cape Codes">
 <meta property="og:title" content="CHEAPEST Cape Codes | Minecraft Cape Shop">
 <meta property="og:description" content="Discover Minecraft capes at CHEAPEST Cape Codes. Browse our collection, check availability, and contact us on Discord.">
-<meta property="og:url" content="https://mc-store.github.io/MC_STORE/">
+<meta property="og:url" content="https://mc-store.github.io/CHEAPESTCapeCodes/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="CHEAPEST Cape Codes | Minecraft Cape Shop">
 <meta name="twitter:description" content="Discover Minecraft capes at CHEAPEST Cape Codes. Browse our collection, check availability, and contact us on Discord.">
@@ -3627,6 +3627,8 @@ const capes = [
     onSale: true,
     image: "moonlightcape.gg",
     showcaseImage: "moonlightcape.gg",
+    // Our Products must use the dedicated 3D render named moonlightcape3D.
+    // Do not fall back to the flat catalogue artwork in the product card.
     productImage: "capes 3D/moonlightcape3D",
     detailImage: "moonlightcape.gg",
     fallbackImage: "media/moonlight-cape.png",
@@ -3638,6 +3640,7 @@ const capes = [
     id: "crafter",
     name: "Crafter Cape",
     textureStem: "craftercapetexture",
+    elytraTextureStem: "craftercapetexture",
     price: 200,
     originalPrice: 250,
     bulkOffer: "Bulk purchases: $180 per cape.",
@@ -3730,7 +3733,20 @@ function escapeHTML(value) {
  * GitHub Pages does not expose folder listings, so the public GitHub tree API is used once,
  * only when a normal image URL fails. All capes share the same cached index.
  */
-const mcStoreNestedAssetIndexApi = "https://api.github.com/repos/mc-store/MC_STORE";
+// Derive the repository from the currently deployed GitHub Pages project URL. This
+// prevents asset lookup from silently searching the old MC_STORE repository after the
+// site has been published as CHEAPESTCapeCodes.
+const mcStoreNestedAssetIndexApi = (() => {
+  const host = String(window.location.hostname || "").toLowerCase();
+  const segments = String(window.location.pathname || "").split("/").filter(Boolean);
+  if (host.endsWith(".github.io") && segments.length) {
+    const owner = host.slice(0, -".github.io".length);
+    let repository = segments[0];
+    try { repository = decodeURIComponent(repository); } catch (_) {}
+    return `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repository)}`;
+  }
+  return "https://api.github.com/repos/mc-store/CHEAPESTCapeCodes";
+})();
 let mcStoreNestedAssetIndexPromise = null;
 
 function mcStoreNestedAssetBaseUrl() {
@@ -3812,6 +3828,33 @@ async function findMcStoreNestedAsset(values, excludedUrls = []) {
   const index = await mcStoreNestedAssetIndex();
   if (!index) return { indexAvailable: false, url: null };
   const excluded = new Set((excludedUrls || []).map(url => String(url || "").split("?")[0]));
+
+  // Prefer a supplied repository-relative path over a basename-only match. Without this,
+  // duplicate filenames in different folders could resolve Moonlight to another cape render.
+  const pathLookup = new Map((index.paths || []).map(path => [String(path).toLowerCase(), path]));
+  const knownExtensions = [".png", ".PNG", ".webp", ".WEBP", ".jpg", ".JPG", ".jpeg", ".JPEG", ".avif", ".gif", ".bmp"];
+  const preferredPaths = [];
+  for (const value of values || []) {
+    let candidate = String(value || "").split(/[?#]/)[0].replace(/\\/g, "/");
+    try { candidate = decodeURIComponent(candidate); } catch (_) {}
+    candidate = candidate.replace(/^\.\//, "").replace(/^\/+/, "");
+    if (!candidate.includes("/")) continue;
+    if (!preferredPaths.includes(candidate)) preferredPaths.push(candidate);
+    if (!/\.[a-z0-9]{2,5}$/i.test(candidate) || /\.gg$/i.test(candidate)) {
+      for (const ext of knownExtensions) {
+        const withExtension = candidate + ext;
+        if (!preferredPaths.includes(withExtension)) preferredPaths.push(withExtension);
+      }
+    }
+  }
+  for (const preferred of preferredPaths) {
+    const path = pathLookup.get(preferred.toLowerCase());
+    if (!path) continue;
+    const url = mcStoreNestedAssetUrl(path);
+    if (!excluded.has(url.split("?")[0])) return { indexAvailable: true, url, path };
+  }
+
+  // No exact path matched, so fall back to basename discovery for older asset layouts.
   for (const filename of mcStoreAssetFilenameOptions(values)) {
     const matches = index.byName.get(filename.toLowerCase()) || [];
     for (const path of matches) {
@@ -3984,10 +4027,11 @@ function capeCard(cape) {
           <span class="card-tag ${cape.stock ? "" : "sold"} ${cape.onSale ? "sale-tag" : ""}">${tag}</span>
           ${cape.onSale && cape.stock ? `<span class="card-tag popular stock-tag">IN STOCK</span>` : (cape.label ? `<span class="card-tag popular">${escapeHTML(cape.label)}</span>` : "")}
           <img class="card-img"
-               src="${escapeHTML(cape.productImage || cape.image)}"
+               src="${escapeHTML(cape.id === "moonlight" ? (cape.productImage || "capes 3D/moonlightcape3D") + "?v=moonlight-3d-2" : (cape.productImage || cape.image))}"
                data-original-src="${escapeHTML(cape.productImage || cape.image)}"
+               data-cape-product-id="${escapeHTML(cape.id)}"
                data-image-file="${escapeHTML((cape.productImage || cape.image).split('/').pop())}"
-               data-fallback-image="${escapeHTML(cape.fallbackImage || cape.showcaseImage || cape.image)}"
+               data-fallback-image="${escapeHTML(cape.id === "moonlight" ? (cape.productImage || "capes 3D/moonlightcape3D") : (cape.fallbackImage || cape.showcaseImage || cape.image))}"
                data-fallback-alt="${escapeHTML(cape.name)}"
                alt="${escapeHTML(cape.name)}"
                loading="lazy"
@@ -24498,7 +24542,7 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
 
     // Probe the most likely locations first so a root-level Moonlight texture works
     // immediately, without depending on the GitHub API or searching every folder.
-    const quickFolders = ["", "media/", "textures/", "texture pack/", "capes 3D/"];
+    const quickFolders = ["", "media/", "textures/", "texture pack/", "capes 3D/", "capes texture/", "Capes Texture/", "cape texture/", "Cape Texture/"];
     for (const folder of quickFolders) {
       const results = await Promise.all(fileNames.map(fileName => probeImage(folder + fileName)));
       const found = results.find(Boolean);
@@ -24582,7 +24626,7 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
     document.getElementById("detailContent").innerHTML = `
       <article class="detail-card detail-card--storefront">
         <div class="storefront-preview-column">
-          <div class="storefront-preview${viewCape.id === "moonlight" ? " moonlight-3d-first" : ""}" id="capePreviewStage" aria-label="Interactive Minecraft dressing room">
+          <div class="storefront-preview${viewCape.id === "moonlight" ? " moonlight-3d-first" : (viewCape.id === "crafter" ? " crafter-3d-only" : "")}" id="capePreviewStage" aria-label="Interactive Minecraft dressing room">
             <div class="cape-preview-scene${viewCape.sceneBackground ? " has-image" : ""}" aria-hidden="true">${viewCape.sceneBackground ? `<img class="cape-preview-scene-image" src="${safeText(viewCape.sceneBackground)}" data-original-src="${safeText(viewCape.sceneBackground)}" data-image-file="${safeText(viewCape.sceneBackground.split("/").pop())}" alt="" loading="eager" decoding="async" onerror="handleCapeCardImageError(this)">` : ""}</div>
             <div class="product-preview-userbar" id="capePreviewUserbar">
               <button class="product-preview-identity-toggle" id="capePreviewIdentityToggle" type="button" aria-label="Open Minecraft username search" aria-expanded="false" title="Change Minecraft skin">
@@ -24873,17 +24917,18 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
     const canvas = document.getElementById("capeSkinViewer");
     if (!stage || !canvas) return;
     stage.classList.remove("fallback-cape-only");
-    // Most products may show their artwork while the 3D viewer initializes.
-    // Moonlight must never show moonlightcape.gg as a temporary still picture:
-    // its preview should be the real 3D cape from the first frame.
+    // Moonlight and Crafter should show only the real 3D render in product details.
+    // Never place their flat catalogue artwork on top of, or in place of, the 3D cape.
     const previewFallback = document.getElementById("capePreviewFallback");
     if (previewFallback) {
       previewFallback.alt = cape.name;
-      if (cape.id === "moonlight") {
+      if (cape.id === "moonlight" || cape.id === "crafter") {
         previewFallback.removeAttribute("src");
         previewFallback.hidden = true;
+        previewFallback.style.display = "none";
       } else {
         previewFallback.hidden = false;
+        previewFallback.style.removeProperty("display");
         previewFallback.src = detailsImage(cape);
       }
     }
@@ -24900,7 +24945,7 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
       closeCurrentViewer();
       const width = Math.max(320, stage.clientWidth || 780);
       const height = Math.max(320, stage.clientHeight || 560);
-      mcStoreViewer = new window.skinview3d.SkinViewer({canvas, width, height, pixelRatio: Math.min(window.devicePixelRatio || 1, 2), enableControls: true});
+      mcStoreViewer = new window.skinview3d.SkinViewer({canvas, width, height, pixelRatio: Math.min(window.devicePixelRatio || 1, window.matchMedia("(max-width: 620px)").matches ? 1.35 : 2), enableControls: true});
       // Disable orbit controls so dragging never moves the camera/background.
       // The custom pointer handler below rotates only the cape model around its own vertical axis.
       mcStoreViewer.controls.enabled = false;
@@ -24936,11 +24981,9 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
           const totalY = event.clientY - pointerState.startY;
           if (!pointerState.turning) {
             if (Math.abs(totalX) < 4 && Math.abs(totalY) < 4) return;
-            // In standalone CAPE mode, vertical drags remain page scrolling; Player/Elytra are freely draggable.
-            if (mcStorePreviewMode === "cape" && Math.abs(totalY) > Math.abs(totalX) * 1.12) {
-              pointerState.scrolling = true;
-              return;
-            }
+            // Treat one-finger drags as 3D interaction in every preview mode.
+            // On phones the cape used to treat vertical swipes as page scrolling,
+            // so the model felt impossible to turn with a finger.
             pointerState.turning = true;
             stage.classList.add("mc-user-rotated");
             if (hint) hint.setAttribute("aria-hidden", "true");
@@ -24962,7 +25005,11 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
                 wrapper.updateMatrixWorld(true);
                 const centerBefore = new Vector3();
                 capeCenterObject.getWorldPosition(centerBefore);
-                wrapper.rotation.y += deltaX * 0.012;
+                // Horizontal finger drag is the natural turn gesture. A vertical-only
+                // swipe also rotates the standalone model so touch users can turn it
+                // regardless of which direction they start dragging.
+                const spinDelta = Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY;
+                wrapper.rotation.y += spinDelta * 0.012;
                 wrapper.updateMatrixWorld(true);
                 const centerAfter = new Vector3();
                 capeCenterObject.getWorldPosition(centerAfter);
@@ -24972,7 +25019,8 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
                 wrapper.updateMatrixWorld(true);
               } else {
                 // Safe fallback for an unexpected viewer/library version.
-                wrapper.rotation.y += deltaX * 0.012;
+                const spinDelta = Math.abs(deltaX) >= Math.abs(deltaY) ? deltaX : deltaY;
+                wrapper.rotation.y += spinDelta * 0.012;
               }
             } else {
               // PLAYER and ELYTRA stay freely draggable in both axes.
@@ -25025,8 +25073,8 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
       }
       if (!textureUrl) {
         console.warn(`CHEAPEST Cape Codes: Minecraft cape texture not found for ${cape.name}. Expected ${textureStems.join(" or ")}.`);
-        // Do not substitute Moonlight's flat display image for its Minecraft texture.
-        if (cape.id !== "moonlight") textureUrl = cape.image || cape.showcaseImage;
+        // Catalogue artwork is not the 64x32 Minecraft cape atlas. Do not feed it
+        // into SkinViewer as a false 3D texture; keep the correct still-art fallback.
       }
 
       const viewerForSkin = mcStoreViewer;
@@ -25059,11 +25107,14 @@ float contrastN=contrast(rgbaM,rgbaN);float contrastS=contrast(rgbaM,rgbaS);floa
       if (viewerForSkin !== mcStoreViewer) return;
       syncCapeTextureToModels();
       const capeLoadFailed = capeResults[0].status === "rejected";
-      if (capeLoadFailed && cape.id !== "moonlight") {
+      if (capeLoadFailed && cape.id !== "moonlight" && cape.id !== "crafter") {
         stage.classList.add("fallback-cape-only");
       } else if (capeLoadFailed && cape.id === "moonlight") {
         // Leave the 3D canvas in place instead of ever showing the flat Moonlight artwork.
         stage.classList.add("moonlight-texture-missing");
+      } else if (capeLoadFailed && cape.id === "crafter") {
+        // Do not replace Crafter's 3D preview with a flat image if its texture is missing.
+        stage.classList.add("crafter-texture-missing");
       }
       // Clear the loading state immediately after the 3D cape finishes (or fails),
       // independently of Steve/player skin loading.
@@ -28132,7 +28183,7 @@ nav .nav-links .nav-link[href="#home"].active {
       // Locate the committed file using the GitHub repository tree (handles exact path/case changes).
       try {
         if (typeof findMcStoreNestedAsset === "function") {
-          const indexed = await findMcStoreNestedAsset([filename], []);
+          const indexed = await findMcStoreNestedAsset([original, filename], []);
           if (indexed && indexed.url) {
             found = await probe(indexed.url);
             if (found) { artCache.set(key, found); return found; }
@@ -28271,6 +28322,28 @@ nav .nav-links .nav-link[href="#home"].active {
     if (!img || img.dataset.mcStableRecovering === "1") return;
     img.dataset.mcStableRecovering = "1";
     const original = img.dataset.originalSrc || img.dataset.imageFile || img.src || "";
+    // Moonlight's Our Products card must only ever use its dedicated 3D render.
+    // Do not run generic basename resolution here: it can pick a different cape with a duplicate filename.
+    if (img.dataset.capeProductId === "moonlight") {
+      const exactCandidates = [
+        "capes 3D/moonlightcape3D", "capes 3D/moonlightcape3D.png", "capes 3D/moonlightcape3D.webp",
+        "Capes 3D/moonlightcape3D", "Capes 3D/moonlightcape3D.png", "capes3D/moonlightcape3D.png"
+      ];
+      let exact = null;
+      for (const candidate of exactCandidates) {
+        exact = await probe(imageUrl(candidate));
+        if (exact) break;
+      }
+      img.dataset.mcStableRecovering = "0";
+      if (exact) {
+        img.hidden = false;
+        img.removeAttribute("hidden");
+        img.style.removeProperty("display");
+        img.dataset.mcLastGoodSrc = exact;
+        if (img.src !== exact) img.src = exact;
+      }
+      return;
+    }
     const filename = filenameOf(img.dataset.imageFile || original);
     const pseudoCape = { image: original || filename, showcaseImage: original || filename, productImage: original || filename };
     let resolved = null;
@@ -29200,6 +29273,7 @@ nav .nav-links .nav-link[href="#home"].active {
       // Try likely paths immediately while the repository index is being fetched.
       const quickFolders = [
         "", "media/", "Media/", "textures/", "Textures/", "texture/", "Texture/",
+        "capes texture/", "Capes Texture/", "cape texture/", "Cape Texture/",
         "capes 3D/", "Capes 3D/", "capes3D/", "texture pack/", "Texture Pack/",
         "resource pack/", "Resource Pack/", "assets/textures/"
       ];
@@ -29327,7 +29401,27 @@ nav .nav-links .nav-link[href="#home"].active {
     if (!homeViewer || !homeViewer.playerObject) return;
     const player = homeViewer.playerObject;
     player.skin.visible = true;
-    player.backEquipment = selectedMode === "elytra" ? "elytra" : "cape";
+    const equipment = selectedMode === "elytra" ? "elytra" : "cape";
+    player.backEquipment = equipment;
+
+    // SkinViewer may load the selected texture onto its standalone cape but leave the
+    // player's cape/Elytra meshes holding an older map after a swatch change. Explicitly
+    // share the newest texture with both meshes every time the selection or mode changes.
+    const selectedTexture = homeViewer.capeTexture;
+    if (selectedTexture) {
+      if (player.cape) {
+        player.cape.map = selectedTexture;
+        player.cape.map.needsUpdate = true;
+        player.cape.visible = equipment === "cape";
+      }
+      if (player.elytra) {
+        player.elytra.map = selectedTexture;
+        player.elytra.map.needsUpdate = true;
+        player.elytra.visible = equipment === "elytra";
+      }
+      selectedTexture.needsUpdate = true;
+    }
+
     homeViewer.animation = isWalking && window.skinview3d && window.skinview3d.WalkingAnimation
       ? new window.skinview3d.WalkingAnimation() : null;
     if (stage) {
@@ -29352,22 +29446,21 @@ nav .nav-links .nav-link[href="#home"].active {
     try {
       const textureUrl = await resolveCapeTexture(cape);
       if (token !== textureRequestToken || !homeViewer) return;
-      const fallbackUrl = makeUrl(cape.art);
-      // A catalogue picture is not a Minecraft cape texture atlas. For Moonlight, only
-      // load the dedicated moonlightcapetexture asset; keep the current model if it is missing.
-      if (!textureUrl && cape.id === "moonlight") {
-        throw new Error("moonlightcapetexture was not found in the repository texture folders");
+      // Catalogue art is not a Minecraft cape texture atlas. Never pass a flat card image
+      // to SkinViewer as a cape texture, since it may appear not to attach to the player.
+      if (!textureUrl) {
+        throw new Error(`${cape.stem} was not found in the CHEAPESTCapeCodes repository texture folders`);
       }
-      await homeViewer.loadCape(textureUrl || fallbackUrl, { makeVisible: false });
+      await homeViewer.loadCape(textureUrl, { makeVisible: false });
       if (token !== textureRequestToken || !homeViewer) return;
       if (stage) stage.classList.remove("cape-texture-missing");
       applyEquipmentMode();
       showStatus(`${cape.name} equipped. Drag the player to turn around.`, "success");
     } catch (error) {
       if (token !== textureRequestToken) return;
-      if (stage && cape.id === "moonlight") stage.classList.add("cape-texture-missing");
+      if (stage) stage.classList.add("cape-texture-missing");
       console.warn("CHEAPEST Cape Codes Fitting Room could not load the cape texture", error);
-      showStatus(`Could not load ${cape.name}'s texture. Check that ${cape.stem} is uploaded to the repository.`, "error");
+      showStatus(`Could not equip ${cape.name}. Make sure ${cape.stem} is uploaded to this repository as a valid Minecraft cape texture.`, "error");
     }
   }
 
@@ -29486,7 +29579,7 @@ nav .nav-links .nav-link[href="#home"].active {
         canvas,
         width: Math.max(320, stage.clientWidth || 650),
         height: Math.max(360, stage.clientHeight || 500),
-        pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
+        pixelRatio: Math.min(window.devicePixelRatio || 1, window.matchMedia("(max-width: 620px)").matches ? 1.35 : 2),
         enableControls: true,
         animation: new window.skinview3d.WalkingAnimation()
       });
@@ -30288,10 +30381,6 @@ body.mc-open-cape-now #details .detail-card {
   }
 </style>
 
-</body>
-</html>
-
-
 
 <style id="cheapest-cape-codes-final-adjustments">
   /* Replace the old image logo with the new brand name. */
@@ -30388,4 +30477,140 @@ body.mc-open-cape-now #details .detail-card {
     .home-fitting-swatch { height: 54px !important; }
     .redeem-discord-help { min-height: 230px; }
   }
+</style>
+
+
+<style id="mc-store-mobile-final-quality-pass">
+/* Final responsive repair: keep image edges visible and prevent accidental horizontal overflow. */
+html, body { max-width: 100%; overflow-x: clip; }
+img, canvas, video, iframe { max-width: 100%; }
+#details .storefront-preview,
+#homeFittingRoom .home-fitting-stage { width: 100%; min-width: 0; }
+#details #capeSkinViewer,
+#homeFittingRoom #homeFitCanvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  touch-action: none !important;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+#details .storefront-preview { overflow: hidden; }
+#details .cape-preview-fallback { object-fit: contain !important; object-position: center !important; }
+
+@media (max-width: 760px) {
+  .container { width: min(94%, 1160px) !important; }
+  .nav-inner { width: 94% !important; min-height: 0 !important; padding: 10px 0 !important; gap: 8px !important; flex-wrap: wrap !important; }
+  .brand { min-width: 0; max-width: 100%; }
+  .brand .brand-fallback { white-space: normal !important; overflow-wrap: anywhere; line-height: 1.05; }
+  .nav-links { width: 100%; min-width: 0; justify-content: center !important; flex-wrap: wrap !important; gap: 4px !important; }
+  .nav-links .nav-link { padding: 8px 9px !important; font-size: 11px !important; }
+  .nav-links .btn { padding: 9px 11px !important; }
+  .sale { padding: 8px 6px !important; letter-spacing: .55px !important; gap: 5px !important; font-size: 9px !important; }
+  .section, .hero, #shop, #featured, #homeFittingRoom, #howToRedeem { max-width: 100%; }
+  .cape-showcase-layout, .detail-card, #details .detail-card, .about-panel, .mc-footer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .showcase-art { width: 100% !important; min-width: 0 !important; }
+  .showcase-art .featured-image { width: 100%; overflow: visible !important; }
+  .showcase-art .featured-image img, #featuredImage { object-fit: contain !important; object-position: center !important; max-width: 100% !important; }
+  .products { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  #shop .card, #details .recommendations .card { min-width: 0 !important; overflow: hidden; }
+  #shop .card-art, #details .recommendations .card-art { height: clamp(125px, 39vw, 185px) !important; overflow: hidden !important; }
+  #shop .card-img, #details .recommendations .card-img {
+    display: block !important; width: 100% !important; height: 100% !important;
+    object-fit: contain !important; object-position: center !important; transform: none !important;
+  }
+  .card-body { min-width: 0 !important; padding: 10px !important; }
+  .card h3, .card-desc, .detail-info p, .storefront-bulk-offer { overflow-wrap: anywhere; word-break: normal; }
+  .card-desc { min-height: 0 !important; line-height: 1.5 !important; }
+  #details .detail-card { display: grid !important; gap: 15px !important; }
+  #details .storefront-preview-column, #details .detail-info { width: 100% !important; min-width: 0 !important; }
+  #details .storefront-preview {
+    height: clamp(340px, 105vw, 470px) !important; min-height: 340px !important;
+    max-height: 72vh; border-radius: 12px !important; touch-action: pan-y !important;
+  }
+  #details #capeSkinViewer { position: absolute !important; inset: 0 !important; touch-action: none !important; }
+  #details .cape-rotate-hint { bottom: 17px !important; left: 50% !important; transform: translateX(-50%); max-width: calc(100% - 28px); white-space: nowrap; font-size: 9px !important; }
+  #details .product-preview-toolbar, #details .preview-tabs { max-width: 100%; flex-wrap: wrap !important; }
+  #details .preview-tab { flex: 1 1 0; min-width: 0; padding: 10px 8px !important; }
+  #details .product-preview-controls, #details .preview-player-controls { min-width: 0; overflow-wrap: anywhere; }
+  #details .detail-info { padding: 18px 15px !important; }
+  #details .detail-info h1 { font-size: clamp(25px, 8vw, 37px) !important; overflow-wrap: anywhere; line-height: 1.12 !important; }
+  #details .storefront-price-row { flex-wrap: wrap; gap: 7px; }
+  #details .storefront-buy { min-height: 48px !important; }
+  #homeFittingRoom { width: 94% !important; padding-left: 0 !important; padding-right: 0 !important; }
+  #homeFittingRoom .home-fitting-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  #homeFittingRoom .home-fitting-stage {
+    width: 100% !important; height: clamp(370px, 120vw, 500px) !important;
+    min-height: 370px !important; max-height: 74vh; overflow: hidden !important;
+  }
+  #homeFittingRoom .home-fitting-preview-column,
+  #homeFittingRoom .home-fitting-info-column,
+  #homeFittingRoom .home-fitting-cape-picker,
+  #homeFittingRoom .home-fitting-selected-card { min-width: 0 !important; width: 100% !important; }
+  #homeFittingRoom .home-fitting-cape-swatches { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px !important; }
+  #homeFittingRoom .home-fitting-swatch { min-width: 0 !important; height: 60px !important; overflow: hidden; }
+  #homeFittingRoom .home-fitting-swatch img { width: 100% !important; height: 100% !important; object-fit: contain !important; object-position: center !important; }
+  #homeFittingRoom .home-fitting-selected-card h3 { overflow-wrap: anywhere; }
+  #homeFittingRoom .home-fitting-status { max-width: calc(100% - 18px) !important; overflow-wrap: anywhere; }
+  #homeFittingRoom .home-fitting-drag-hint { max-width: calc(100% - 20px); white-space: normal; }
+  #homeFittingRoom .home-fitting-mode-switch { max-width: calc(100% - 18px); }
+  #howToRedeem .redeem-guide-card, #howToRedeem .redeem-customer-cards { grid-template-columns: minmax(0, 1fr) !important; }
+  #howToRedeem iframe, #howToRedeem video { width: 100% !important; max-width: 100% !important; }
+  .discord-popover, .auth-box, .modal, .popover { max-width: calc(100vw - 24px) !important; }
+  .mc-footer .mc-footer-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 20px !important; }
+}
+@media (max-width: 390px) {
+  .container { width: calc(100% - 20px) !important; }
+  .products { gap: 8px !important; }
+  #shop .card-art, #details .recommendations .card-art { height: 126px !important; }
+  .card-body { padding: 8px !important; }
+  .card h3 { font-size: 12px !important; }
+  .card-desc { font-size: 10px !important; }
+  .card-price { font-size: 14px !important; }
+  #details .storefront-preview { min-height: 320px !important; height: 106vw !important; }
+  #homeFittingRoom .home-fitting-stage { min-height: 350px !important; }
+  #homeFittingRoom .home-fitting-userbar { max-width: calc(100% - 56px) !important; }
+  #homeFittingRoom .home-fitting-search-panel { max-width: calc(100vw - 72px) !important; }
+}
+@media (hover: none), (pointer: coarse) {
+  /* No hover zoom on touch; it clipped the edges of cape artwork on phones. */
+  #shop .card:hover, #details .recommendations .card:hover { transform: none !important; }
+  #shop .card-img, #shop .card:hover .card-img,
+  #details .recommendations .card-img, #details .recommendations .card:hover .card-img {
+    transform: none !important; object-fit: contain !important;
+  }
+}
+</style>
+
+</body>
+</html>
+
+
+<style id="mc-store-moonlight-crafter-3d-render-fix">
+/* Our Products must use capes 3D/moonlightcape3D for Moonlight. */
+#shop .card a .card-img[data-image-file="moonlightcape3D"] {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+/* On Crafter's product page, hide the flat catalogue picture completely so it never sits over the interactive 3D preview. */
+#details .storefront-preview.crafter-3d-only .cape-preview-fallback,
+#details .storefront-preview.crafter-3d-only.preview-loading .cape-preview-fallback,
+#details .storefront-preview.crafter-3d-only.fallback-cape-only .cape-preview-fallback {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#details .storefront-preview.crafter-3d-only #capeSkinViewer {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+}
 </style>
