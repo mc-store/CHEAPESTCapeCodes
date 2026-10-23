@@ -3629,7 +3629,7 @@ const capes = [
     showcaseImage: "moonlightcape.gg",
     // Our Products must use the dedicated 3D render named moonlightcape3D.
     // Do not fall back to the flat catalogue artwork in the product card.
-    productImage: "capes 3D/moonlightcape3D",
+    productImage: "media/moonlightcape3D.png",
     detailImage: "moonlightcape.gg",
     fallbackImage: "media/moonlight-cape.png",
     sceneBackground: "moonvillage.png",
@@ -4027,7 +4027,7 @@ function capeCard(cape) {
           <span class="card-tag ${cape.stock ? "" : "sold"} ${cape.onSale ? "sale-tag" : ""}">${tag}</span>
           ${cape.onSale && cape.stock ? `<span class="card-tag popular stock-tag">IN STOCK</span>` : (cape.label ? `<span class="card-tag popular">${escapeHTML(cape.label)}</span>` : "")}
           <img class="card-img"
-               src="${escapeHTML(cape.id === "moonlight" ? (cape.productImage || "capes 3D/moonlightcape3D") + "?v=moonlight-3d-2" : (cape.productImage || cape.image))}"
+               src="${escapeHTML(cape.id === "moonlight" ? (cape.productImage || "media/moonlightcape3D.png") + "?v=moonlight-media-3" : (cape.productImage || cape.image))}"
                data-original-src="${escapeHTML(cape.productImage || cape.image)}"
                data-cape-product-id="${escapeHTML(cape.id)}"
                data-image-file="${escapeHTML((cape.productImage || cape.image).split('/').pop())}"
@@ -28325,22 +28325,24 @@ nav .nav-links .nav-link[href="#home"].active {
     // Moonlight's Our Products card must only ever use its dedicated 3D render.
     // Do not run generic basename resolution here: it can pick a different cape with a duplicate filename.
     if (img.dataset.capeProductId === "moonlight") {
+      // Only resolve Moonlight's own render. Never substitute Crafter or another cape image.
       const exactCandidates = [
-        // Check the likely location used in the current CHEAPESTCapeCodes repo first,
-        // then the dedicated 3D folder. Keep Moonlight isolated from other cape artwork.
-        "media/moonlightcape3D", "media/moonlightcape3D.png", "media/moonlightcape3D.webp",
-        "media/moonlightcape3D.jpg", "media/moonlightcape3D.jpeg",
-        "capes 3D/moonlightcape3D", "capes 3D/moonlightcape3D.png", "capes 3D/moonlightcape3D.webp",
+        "media/moonlightcape3D.png", "media/moonlightcape3D.PNG",
+        "media/moonlightcape3D.webp", "media/moonlightcape3D.WEBP",
+        "media/moonlightcape3D.jpg", "media/moonlightcape3D.JPG",
+        "media/moonlightcape3D.jpeg", "media/moonlightcape3D.JPEG",
+        "media/moonlightcape3D", "media/moonlightCape3D.png", "media/moonlightCape3D.webp",
+        "media/moonlightcape3d.png", "media/moonlightcape3d.webp",
+        "capes 3D/moonlightcape3D.png", "capes 3D/moonlightcape3D.PNG",
+        "capes 3D/moonlightcape3D.webp", "capes 3D/moonlightcape3D.WEBP",
         "capes 3D/moonlightcape3D.jpg", "capes 3D/moonlightcape3D.jpeg",
-        "Capes 3D/moonlightcape3D", "Capes 3D/moonlightcape3D.png", "Capes 3D/moonlightcape3D.webp",
-        "capes3D/moonlightcape3D", "capes3D/moonlightcape3D.png", "capes3D/moonlightcape3D.webp",
-        "moonlightcape3D", "moonlightcape3D.png", "moonlightcape3D.webp", "moonlightcape3D.jpg"
+        "Capes 3D/moonlightcape3D.png", "Capes 3D/moonlightcape3D.webp",
+        "capes3D/moonlightcape3D.png", "capes3D/moonlightcape3D.webp",
+        "moonlightcape3D.png", "moonlightcape3D.PNG", "moonlightcape3D.webp",
+        "moonlightcape3D.jpg", "moonlightcape3D.jpeg", "moonlightcape3D"
       ];
-      let exact = null;
-      for (const candidate of exactCandidates) {
-        exact = await probe(imageUrl(candidate));
-        if (exact) break;
-      }
+      const checks = await Promise.all(exactCandidates.map(candidate => probe(imageUrl(candidate))));
+      const exact = checks.find(Boolean) || null;
       img.dataset.mcStableRecovering = "0";
       if (exact) {
         img.hidden = false;
